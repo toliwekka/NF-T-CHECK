@@ -1050,6 +1050,242 @@
         </style>
     </head>
     <body>
+<script>
+  (function () {
+            const themes = {
+                default: {
+                    "--primary": "#2ecc71",
+                    "--primary-light": "#3ae074",
+                    "--primary-dark": "#1e8e4e",
+                    "--secondary": "#a3e4d7",
+                    "--secondary-light": "#b9f6e3",
+                    "--secondary-dark": "#7acfa6",
+                    "--bg": "#edf8f6",
+                    "--card-bg": "#f8fdfa",
+                    "--text-color": "#145a32",
+                    "--accent-1": "#b8e6d4",
+                    "--accent-2": "#cceee3",
+                    "--accent-3": "#dfeff0",
+                    "--hover-bg": "#d4f0e4",
+                    "--hover-text": "#0e3d24",
+                    "--section-bg": "#ffffff",
+                    "--section-border": "#ddd",
+                    "--mini-card-bg": "#f0f9f0",
+                    "--mini-card-border": "#cce6cc",
+                    "--mini-card-hover": "#d1e7d1",
+                    "--button-bg": "#2ecc71",
+                    "--button-hover-bg": "#28a745",
+                },
+                fieryRed: {
+                    "--primary": "#930d0e",
+                    "--primary-light": "#c22c2c",
+                    "--primary-dark": "#7b0a0b",
+                    "--secondary": "#2a7a4e",
+                    "--secondary-light": "#66b59b",
+                    "--secondary-dark": "#1e5c3f",
+                    "--bg": "#f5fdf7",
+                    "--card-bg": "#ffffff",
+                    "--text-color": "#333",
+                    "--accent-1": "#f9d5d4",
+                    "--accent-2": "#e4b0b1",
+                    "--accent-3": "#f1c0c1",
+                    "--hover-bg": "#d46a6a",
+                    "--hover-text": "#0e3d24",
+                    "--section-bg": "#ffffff",
+                    "--section-border": "#ddd",
+                    "--mini-card-bg": "#f0f9f0",
+                    "--mini-card-border": "#cce6cc",
+                    "--mini-card-hover": "#d1e7d1",
+                    "--button-bg": "#930d0e",
+                    "--button-hover-bg": "#b35c5c",
+                },
+                blushRose: {
+                    "--primary": "#e84393",
+                    "--primary-light": "#f56eb5",
+                    "--primary-dark": "#b93372",
+                    "--secondary": "#fab1a0",
+                    "--secondary-light": "#ffcfb8",
+                    "--secondary-dark": "#f28f75",
+                    "--bg": "#fceff9",
+                    "--card-bg": "#fff",
+                    "--text-color": "#6c2c5b",
+                    "--accent-1": "#ffe2e6",
+                    "--accent-2": "#ffccd7",
+                    "--accent-3": "#ffd0d8",
+                    "--hover-bg": "#f3a8b7",
+                    "--hover-text": "#0e3d24",
+                    "--section-bg": "#ffffff",
+                    "--section-border": "#ddd",
+                    "--mini-card-bg": "#f0f9f0",
+                    "--mini-card-border": "#cce6cc",
+                    "--mini-card-hover": "#d1e7d1",
+                    "--button-bg": "#e84393",
+                    "--button-hover-bg": "#ec5987",
+                },
+                midnightDark: {
+                    "--primary": "#ff5252",
+                    "--primary-light": "#ff7f7f",
+                    "--primary-dark": "#e10000",
+                    "--secondary": "#00c896",
+                    "--secondary-light": "#33e0b3",
+                    "--secondary-dark": "#009c75",
+                    "--bg": "#1a1a1a",
+                    "--card-bg": "#2a2a2a",
+                    "--text-color": "#eee",
+                    "--accent-1": "#ff2d2d",
+                    "--accent-2": "#ff4444",
+                    "--accent-3": "#ff6b6b",
+                    "--hover-bg": "#ff4d4d",
+                    "--hover-text": "#0e3d24",
+                    "--section-bg": "#2a2a2a",
+                    "--section-border": "#ddd",
+                    "--mini-card-bg": "#f0f9f0",
+                    "--mini-card-border": "#cce6cc",
+                    "--mini-card-hover": "#d1e7d1",
+                    "--button-bg": "#ff5252",
+                    "--button-hover-bg": "#ff4d4d",
+                },
+                sereneLavender: {
+                    "--primary": "#9b59b6",
+                    "--primary-light": "#ab70c6",
+                    "--primary-dark": "#7a478d",
+                    "--secondary": "#dcd6f7",
+                    "--secondary-light": "#f1f0fe",
+                    "--secondary-dark": "#a5a1d8",
+                    "--bg": "#f6f0ff",
+                    "--card-bg": "#ffffff",
+                    "--text-color": "#4a347f",
+                    "--accent-1": "#ece3ff",
+                    "--accent-2": "#f1e0ff",
+                    "--accent-3": "#d8b7e4",
+                    "--hover-bg": "#ece3ff",
+                    "--hover-text": "#0e3d24",
+                    "--section-bg": "#f5f0ff",
+                    "--section-border": "#d0a3db",
+                    "--mini-card-bg": "#f3e6f9",
+                    "--mini-card-border": "#d4aee0",
+                    "--mini-card-hover": "#d8b7e4",
+                    "--button-bg": "#9b59b6",
+                    "--button-hover-bg": "#7a478d",
+                },
+                oceanBreeze: {
+                    "--primary": "#0077b6",
+                    "--primary-light": "#66a6c9",
+                    "--primary-dark": "#004f74",
+                    "--secondary": "#90e0ef",
+                    "--secondary-light": "#b8efff",
+                    "--secondary-dark": "#60b6c8",
+                    "--bg": "#e0f7fa",
+                    "--card-bg": "#ffffff",
+                    "--text-color": "#003b5c",
+                    "--accent-1": "#caf0f8",
+                    "--accent-2": "#b8efff",
+                    "--accent-3": "#a1d2e6",
+                    "--hover-bg": "#caf0f8",
+                    "--hover-text": "#0e3d24",
+                    "--section-bg": "#d4eaff",
+                    "--section-border": "#5bb8d1",
+                    "--mini-card-bg": "#b3e2f2",
+                    "--mini-card-border": "#7fb7cf",
+                    "--mini-card-hover": "#a1d2e6",
+                    "--button-bg": "#0077b6",
+                    "--button-hover-bg": "#005f86",
+                },
+                goldenSunset: {
+                    "--primary": "#ff6b6b",
+                    "--primary-light": "#ff9999",
+                    "--primary-dark": "#d94d4d",
+                    "--secondary": "#ffa502",
+                    "--secondary-light": "#ffbf6e",
+                    "--secondary-dark": "#d57f00",
+                    "--bg": "#fffaf0",
+                    "--card-bg": "#fff6f0",
+                    "--text-color": "#4e342e",
+                    "--accent-1": "#ffe9d6",
+                    "--accent-2": "#ffcc99",
+                    "--accent-3": "#f8d1b6",
+                    "--hover-bg": "#ffe9d6",
+                    "--hover-text": "#0e3d24",
+                    "--section-bg": "#fff3e6",
+                    "--section-border": "#ffcc99",
+                    "--mini-card-bg": "#f9e6e1",
+                    "--mini-card-border": "#f5c5b0",
+                    "--mini-card-hover": "#f8d1b6",
+                    "--button-bg": "#ff6b6b",
+                    "--button-hover-bg": "#ff4444",
+                },
+                softStone: {
+                    "--primary": "#7f8c8d",
+                    "--primary-light": "#a4b0b1",
+                    "--primary-dark": "#5f6a6a",
+                    "--secondary": "#bdc3c7",
+                    "--secondary-light": "#d0d6d7",
+                    "--secondary-dark": "#98a1a2",
+                    "--bg": "#f2f4f4",
+                    "--card-bg": "#ffffff",
+                    "--text-color": "#2c3e50",
+                    "--accent-1": "#e5e8e8",
+                    "--accent-2": "#d9e0e3",
+                    "--accent-3": "#c8d1d2",
+                    "--hover-bg": "#e5e8e8",
+                    "--hover-text": "#0e3d24",
+                    "--section-bg": "#d9e0e3",
+                    "--section-border": "#b7c1c4",
+                    "--mini-card-bg": "#d9e0e3",
+                    "--mini-card-border": "#c1c8c9",
+                    "--mini-card-hover": "#c8d1d2",
+                    "--button-bg": "#7f8c8d",
+                    "--button-hover-bg": "#5e6b6c",
+                },
+                softBlush: {
+                    "--primary": "#ff9aa2",
+                    "--primary-light": "#ffb6c1",
+                    "--primary-dark": "#e27a82",
+                    "--secondary": "#ffd3b6",
+                    "--secondary-light": "#fff2d9",
+                    "--secondary-dark": "#f8c19f",
+                    "--bg": "#fff5f8",
+                    "--card-bg": "#ffffff",
+                    "--text-color": "#b33951",
+                    "--accent-1": "#ffe9ef",
+                    "--accent-2": "#fbc9d0",
+                    "--accent-3": "#ffdce3",
+                    "--hover-bg": "#ffe9ef",
+                    "--hover-text": "#0e3d24",
+                    "--section-bg": "#ffe3ea",
+                    "--section-border": "#fbc9d0",
+                    "--mini-card-bg": "#ffe8ec",
+                    "--mini-card-border": "#f5ccd3",
+                    "--mini-card-hover": "#ffdce3",
+                    "--button-bg": "#ff9aa2",
+                    "--button-hover-bg": "#e27a82",
+                },
+            };
+
+
+    const themeName = localStorage.getItem("theme") || "default";
+    const theme = themes[themeName];
+    if (theme) {
+      const root = document.documentElement;
+      const style = document.createElement("style");
+      let cssVars = ":root {";
+      for (const key in theme) {
+        cssVars += `${key}: ${theme[key]};`;
+      }
+      cssVars += "}";
+      style.innerHTML = cssVars;
+      document.head.appendChild(style);
+    }
+  })();
+</script>
+
+<style>
+  html {
+    transition: none !important;
+  }
+</style>
+
+
         <!-- Main content area -->
         <div class="page-wrapper">
             <div class="theme-switcher">
@@ -2984,5 +3220,11 @@
                 }
             });
         </script>
+<script>
+  window.addEventListener("load", () => {
+    document.documentElement.style.transition = "";
+  });
+</script>
+
     </body>
 </html>
