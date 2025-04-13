@@ -3218,8 +3218,17 @@
             });
         </script>
         <script>
+            // Re-enable transitions after everything has loaded
             window.addEventListener("load", () => {
+                // Clear any transition-blocking styles from <html> or <body>
                 document.documentElement.style.transition = "";
+                document.body.style.transition = "";
+
+                // Remove inline 'transition: none' from all elements (for smooth future interactions)
+                document.querySelectorAll("*").forEach((el) => el.style.removeProperty("transition"));
+
+                // Reveal the page if it was hidden to prevent flicker
+                document.body.style.visibility = "visible";
             });
         </script>
     </body>
