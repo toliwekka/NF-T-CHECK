@@ -1340,7 +1340,7 @@
                                         <div class="form-group" style="display: flex; align-items: center; margin-bottom: 10px; position: relative;">
                                             <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
                                                 <label for="MS-add_address" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
-                                                    Evaluation Address
+                                                    Evaluation Location
                                                 </label>
                                                 <input
                                                     type="text"
@@ -1386,7 +1386,7 @@
                                             const suggestionsBox = document.getElementById("MS-add_suggestions");
 
                                             let debounceTimer;
-                                            localStorage.clear();
+                                            
 
                                             // Global variable to store the selected country
                                             let selectedCountry = "";
@@ -2596,6 +2596,7 @@
                                     </div>
 
                                     <script>
+localStorage.clear();
                                         document.addEventListener("DOMContentLoaded", () => {
                                             const consentCheckbox = document.getElementById("consent-chkbx");
                                             const consentBtn = document.getElementById("chk-header");
@@ -2662,6 +2663,7 @@
                                                 }
                                             });
 
+
                                             // ✅ Final check on consent button click
                                             consentBtn.addEventListener("click", (e) => {
                                                 e.preventDefault();
@@ -2680,18 +2682,58 @@
                                                         consentBtn.disabled = false;
                                                         consentCheckbox.checked = true;
                                                     }
-
-                                                    // ✅ Safe to proceed
-                                                    console.log("Consent accepted. Opening iframe...");
-
-                                                    const firstNames = document.getElementById("first-name").value.trim();
-                                                    if (firstNames) {
-                                                        localStorage.setItem("firstNames", firstNames);
-                                                    }
-                                                    openIframe();
+                                                    
                                                 }, 50);
                                             });
                                         });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const firstNameInput = document.getElementById("first-name");
+
+    if (firstNameInput) {
+        // Update localStorage on blur (when user leaves the input)
+        firstNameInput.addEventListener("blur", () => {
+            const firstNames = firstNameInput.value.trim();
+            if (firstNames) {
+                localStorage.setItem("firstNames", firstNames);
+            }
+        });
+
+        // Optional: Update localStorage on typing (live as they type)
+        firstNameInput.addEventListener("input", () => {
+            const firstNames = firstNameInput.value.trim();
+            if (firstNames) {
+                localStorage.setItem("firstNames", firstNames);
+            }
+        });
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const inputs = document.querySelectorAll("input, textarea, select");
+
+    inputs.forEach((input) => {
+        const key = `form_${input.id || input.name}`;
+
+        // Restore previous value from localStorage (optional)
+        const savedValue = localStorage.getItem(key);
+        if (savedValue !== null) {
+            input.value = savedValue;
+        }
+
+        // Save value to localStorage when input changes
+        input.addEventListener("input", () => {
+            localStorage.setItem(key, input.value.trim());
+        });
+
+        // Optionally update on blur too
+        input.addEventListener("blur", () => {
+            localStorage.setItem(key, input.value.trim());
+        });
+    });
+});
+
+
                                     </script>
 
                                     <script>
@@ -2858,10 +2900,6 @@
                 });
             </script>
         </div>
-        <!-- FULLSCREEN IFRAME -->
-        <div id="iframeContainer" class="fullscreen-iframe">
-            <iframe id="assessmentIframe" src="assessmentintroa.html" allowfullscreen></iframe>
-        </div>
 
         <!-- STYLES -->
         <style>
@@ -2881,49 +2919,17 @@
                 transition: background-color 0.3s ease, color 0.3s ease;
             }
 
-            .fullscreen-iframe {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                display: none;
-                background: var(--bg, #f5fdf7);
-                z-index: 9999;
-            }
-
-            .fullscreen-iframe iframe {
-                width: 100%;
-                height: 100%;
-                border: none;
-            }
-
-            .close-btn {
-                position: absolute;
-                top: 20px;
-                right: 30px;
-                background: var(--primary, #930d0e);
-                color: #fff;
-                border: none;
-                padding: 10px 18px;
-                font-size: 1rem;
-                border-radius: 8px;
-                cursor: pointer;
-                z-index: 10000;
-            }
         </style>
 
         <!-- SCRIPT -->
         <script>
-            function openIframe() {
-                document.getElementById("iframeContainer").style.display = "block";
-                document.getElementById("rgStr").style.display = "none";
-            }
+            document.addEventListener("DOMContentLoaded", () => {
+                const btn = document.getElementById("chk-header");
 
-            function closeIframe() {
-                document.getElementById("iframeContainer").style.display = "none";
-                document.getElementById("rgStr").style.display = "block";
-            }
+                btn.addEventListener("click", () => {
+                    window.location.href = "assessmentintroa.html";
+                });
+            });
         </script>
 
         <script>
@@ -3151,10 +3157,6 @@
                     });
                 }
 
-                // Re-broadcast theme for late-loading iframes
-                setTimeout(() => {
-                    broadcastThemeToIframes(currentTheme);
-                }, 100);
             });
 
             // Apply the selected theme
@@ -3173,15 +3175,8 @@
                 // Persist and sync
                 localStorage.setItem("theme", themeName);
                 currentTheme = themeName;
-                broadcastThemeToIframes(themeName);
             }
 
-            // Send theme to all iframes
-            function broadcastThemeToIframes(themeName) {
-                document.querySelectorAll("iframe").forEach((iframe) => {
-                    iframe.contentWindow?.postMessage({ theme: themeName }, "*");
-                });
-            }
 
             // Adjust text color based on theme background
             function setHeroDescriptionTextColor() {
