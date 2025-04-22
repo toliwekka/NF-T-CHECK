@@ -284,10 +284,48 @@
             </div>
         </div>
 
+        <!-- Firebase SDKs (compat mode for HTML) -->
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+
+
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDeDsOiA6QP4qbedd_JmQ9na1hM3sf4y3Q",
+        authDomain: "mentalhealthtracker-15563.firebaseapp.com",
+        projectId: "mentalhealthtracker-15563",
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const db = firebase.firestore();
+
+    // Example: Saving data with timestamp
+    function saveUserData(data) {
+        db.collection("users").add({
+            ...data,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+        .then((docRef) => {
+            console.log("Document written with ID: ", docRef.id);
+        })
+        .catch((error) => {
+            console.error("Error adding document: ", error);
+        });
+    }
+
+    // Example usage:
+    // saveUserData({ name: "John", age: 30 });
+</script>
+
+
+
         <script>
             document.addEventListener("DOMContentLoaded", () => {
-                const name = localStorage.getItem("firstNames") || "Your";
-                const capitalized = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+                const name = localStorage.getItem("form_005_first-name") || "Your";
+                const capitalized = name.charAt(0).toUpperCase() + name.slice(1).toUpperCase();
                 document.getElementById("userName").textContent = `${capitalized},`;
             });
 
@@ -336,8 +374,8 @@
 
             window.addEventListener("DOMContentLoaded", () => {
                 // Initial fetch of the scores from localStorage
-                AScore = parseInt(localStorage.getItem("AScore")) || 0;
-                BScore = parseInt(localStorage.getItem("BScore")) || 0;
+                AScore = parseInt(localStorage.getItem("form_042_PartA_Score")) || 0;
+                BScore = parseInt(localStorage.getItem("form_044_PartB_Score")) || 0;
 
                 // If the values are already set, proceed with the calculations
                 if (AScore !== 0 && BScore !== 0) {
@@ -355,8 +393,8 @@
 
             // Function to fetch data from localStorage and retry if it's not yet available
             function getStoredData() {
-                const tempAScore = localStorage.getItem("AScore");
-                const tempBScore = localStorage.getItem("BScore");
+                const tempAScore = localStorage.getItem("form_042_PartA_Score");
+                const tempBScore = localStorage.getItem("form_044_PartB_Score");
 
                 // If the scores are not yet available, retry after 100ms
                 if (tempAScore === null || tempBScore === null) {
@@ -374,7 +412,29 @@
                     updateTextContent(AScore, BScore, percA, percB);
                     plotGauges(percA, percB);
                     renderAllCharts(percA, percB);
+                    sendLocalStorageToFirestore();
                 }
+            }
+
+            function sendLocalStorageToFirestore() {
+                const data = {};
+
+                // Loop through localStorage keys
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    data[key] = value;
+                }
+
+                db.collection("nftclientResponses")
+                    .add(data)
+                    .then(() => {
+                        alert("Data submitted successfully!");
+                        console.log("Saved:", data);
+                    })
+                    .catch((error) => {
+                        console.error("Error writing document: ", error);
+                    });
             }
 
             function updateScores(AScore, BScore) {

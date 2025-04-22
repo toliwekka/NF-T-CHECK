@@ -1321,11 +1321,11 @@
                                         <!-- Address Input -->
 
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="assessment_location" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="001_evaluation_location_type" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Evaluation Venue
                                             </label>
                                             <select
-                                                id="assessment_location"
+                                                id="001_evaluation_location_type"
                                                 class="form-group"
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                             >
@@ -1339,21 +1339,22 @@
                                             </select>
                                         </div>
 
+                                        <!-- Evaluation Location Field -->
                                         <div class="form-group" style="display: flex; align-items: center; margin-bottom: 10px; position: relative;">
                                             <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="MS-add_address" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="002_evaluation_address" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Evaluation Location
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    id="MS-add_address"
+                                                    id="002_evaluation_address"
                                                     class="MS-add-form-control"
                                                     placeholder="Search by address or postcode..."
                                                     autocomplete="off"
                                                     style="width: 100%; padding: 0.5rem; font-size: 1rem; border-radius: 5px; border: 1px solid #ccc;"
                                                 />
                                                 <div
-                                                    id="MS-add_suggestions"
+                                                    id="002_evaluation_suggestions"
                                                     class="MS-add-suggestion-box"
                                                     style="
                                                         position: absolute;
@@ -1376,21 +1377,17 @@
 
                                         <!-- Country Field (Auto-filled) -->
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="MS-add_country" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="003_evaluation_country" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Country
                                             </label>
-
-                                            <input type="text" id="MS-add_country" class="MS-add-form-control" readonly style="background-color: #f9f9f9; cursor: not-allowed;" />
-                                            <!/div>
+                                            <input type="text" id="003_evaluation_country" class="MS-add-form-control" readonly style="background-color: #f9f9f9; cursor: not-allowed;" />
                                         </div>
+
                                         <script>
-                                            const addressInput = document.getElementById("MS-add_address");
-                                            const suggestionsBox = document.getElementById("MS-add_suggestions");
+                                            const addressInput = document.getElementById("002_evaluation_address");
+                                            const suggestionsBox = document.getElementById("002_evaluation_suggestions");
 
                                             let debounceTimer;
-                                            
-
-                                            // Global variable to store the selected country
                                             let selectedCountry = "";
 
                                             function escapeHTML(str) {
@@ -1419,39 +1416,28 @@
 
                                             function showSuggestions(results) {
                                                 clearSuggestions();
-
                                                 results.forEach((item) => {
                                                     const suggestionItem = document.createElement("div");
                                                     suggestionItem.innerHTML = escapeHTML(item.display_name);
                                                     suggestionItem.style.cssText = "padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; font-family: Poppins, sans-serif;";
-
                                                     suggestionItem.onclick = () => {
                                                         addressInput.value = item.display_name;
 
                                                         const address = item.address || {};
-                                                        setFieldValue("MS-add_address_line1", address.road || address.building || item.display_name);
-                                                        setFieldValue("MS-add_address_line2", address.suburb || address.neighbourhood);
-                                                        setFieldValue("MS-add_city", address.city || address.town || address.village);
-                                                        setFieldValue("MS-add_country", address.country);
+                                                        setFieldValue("002_evaluation_address", item.display_name);
+                                                        setFieldValue("003_evaluation_country", address.country);
 
-                                                        // Update the global selectedCountry with the selected country
                                                         selectedCountry = address.country;
-
                                                         clearSuggestions();
-
-                                                        // Call function to update regulation based on selected country
-                                                        updateDataLawNote();
+                                                        updateDataLawNote?.(); // Optional safeguard if function doesn’t exist
                                                     };
-
                                                     suggestionsBox.appendChild(suggestionItem);
                                                 });
-
                                                 suggestionsBox.style.display = "block";
                                             }
 
                                             addressInput.addEventListener("input", () => {
                                                 const query = addressInput.value.trim();
-
                                                 clearTimeout(debounceTimer);
 
                                                 if (query.length < 3) {
@@ -1479,7 +1465,6 @@
                                                 }, 300);
                                             });
 
-                                            // Hide suggestions if clicked outside
                                             document.addEventListener("click", (e) => {
                                                 if (!addressInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
                                                     clearSuggestions();
@@ -1787,78 +1772,57 @@
                                     <button class="accordion-header">👤 Personal Details</button>
                                     <div class="accordion-body">
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="title" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="004_title" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Title / Salutation
                                             </label>
                                             <select
-                                                id="title"
+                                                id="004_title"
                                                 class="form-group"
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                             >
                                                 <option value="" selected disabled>Select Salutation...</option>
-                                                <!-- Common Salutations -->
+
+                                                <!-- Standard International Titles -->
                                                 <option value="mr">Mr.</option>
                                                 <option value="mrs">Mrs.</option>
                                                 <option value="miss">Miss</option>
                                                 <option value="ms">Ms.</option>
+                                                <option value="mx">Mx.</option>
+                                                <!-- Gender-neutral -->
                                                 <option value="dr">Dr.</option>
                                                 <option value="prof">Prof.</option>
-                                                <option value="rev">Rev.</option>
                                                 <option value="sir">Sir</option>
                                                 <option value="madam">Madam</option>
 
-                                                <!-- Ugandan Specific -->
-                                                <option value="nyabo">Nyabo</option>
-                                                <!-- Used as a respectful address for women in Uganda -->
-                                                <option value="omukama">Omukama</option>
-                                                <!-- A title for kings or royals in Uganda -->
-                                                <option value="kabaka">Kabaka</option>
-                                                <!-- Title for the King of Buganda -->
-                                                <option value="lumu">Lumu</option>
-                                                <!-- A title used for some elders or leaders in Uganda -->
-
-                                                <!-- South African Specific -->
-                                                <option value="comrade">Comrade</option>
-                                                <!-- Used for addressing fellow members in political contexts -->
-                                                <option value="uBaba">uBaba</option>
-                                                <!-- Zulu for Father, respectful term for elderly men -->
-                                                <option value="uMama">uMama</option>
-                                                <!-- Zulu for Mother, respectful term for elderly women -->
-                                                <option value="dlalamanzi">Dlalamanzi</option>
-                                                <!-- Zulu phrase meaning "play with the waters," used as a term of endearment or respect -->
-
-                                                <!-- Religious Salutations -->
-                                                <option value="pastor">Pastor</option>
-                                                <option value="imam">Imam</option>
-                                                <option value="bishop">Bishop</option>
+                                                <!-- Religious Titles -->
                                                 <option value="father">Father</option>
-                                                <!-- Used in Catholic or Christian religious contexts -->
+                                                <option value="pastor">Pastor</option>
+                                                <option value="bishop">Bishop</option>
+                                                <option value="imam">Imam</option>
                                                 <option value="sheikh">Sheikh</option>
-                                                <!-- Muslim religious title -->
-
-                                                <!-- Other Option -->
-                                                <option value="other">Other</option>
+                                                <option value="rabbi">Rabbi</option>
+                                                <option value="rev">Rev.</option>
                                             </select>
                                         </div>
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="first-name" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="005_first-name" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 First Name
                                             </label>
                                             <input
                                                 type="text"
-                                                id="first-name"
+                                                id="005_first-name"
                                                 placeholder="e.g. Jane"
                                                 required
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                             />
                                         </div>
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="last-name" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="006_last-name" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Last Name
                                             </label>
                                             <input
                                                 type="text"
-                                                id="last-name"
+                                                id="006_last-name"
                                                 placeholder="e.g. Doe"
                                                 required
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
@@ -1872,12 +1836,12 @@
                                     <button class="accordion-header">📞 Contact Details</button>
                                     <div class="accordion-body">
                                         <div class="form-group" style="display: flex; align-items: center; margin-bottom: 10px;">
-                                            <label for="email" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="007_email" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Email
                                             </label>
                                             <input
-                                                type="email"
-                                                id="email"
+                                                type="007_email"
+                                                id="007_email"
                                                 placeholder="e.g. you@example.com"
                                                 required
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
@@ -1885,12 +1849,12 @@
                                         </div>
 
                                         <div class="form-group" style="display: flex; align-items: center; margin-bottom: 10px;">
-                                            <label for="phone" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="008_phone" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Phone
                                             </label>
                                             <input
                                                 type="tel"
-                                                id="phone"
+                                                id="008_phone"
                                                 placeholder="e.g. +1234567890"
                                                 required
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
@@ -1904,11 +1868,11 @@
                                     <button class="accordion-header">📋 Personal Information</button>
                                     <div class="accordion-body">
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="gender" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="009_gender" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Gender
                                             </label>
                                             <select
-                                                id="gender"
+                                                id="009_gender"
                                                 required
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                             >
@@ -1919,11 +1883,11 @@
                                         </div>
 
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="age-group" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="010_age-group" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Age Group
                                             </label>
                                             <select
-                                                id="age-group"
+                                                id="010_age-group"
                                                 required
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                             >
@@ -1938,11 +1902,11 @@
                                         </div>
 
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="marital-status" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="011_marital-status" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Marital Status
                                             </label>
                                             <select
-                                                id="marital-status"
+                                                id="011_marital-status"
                                                 required
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                             >
@@ -1955,12 +1919,12 @@
                                         </div>
 
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="children" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="012_children" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Number of Children
                                             </label>
                                             <input
                                                 type="number"
-                                                id="children"
+                                                id="012_children"
                                                 min="0"
                                                 required
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
@@ -1968,12 +1932,12 @@
                                         </div>
 
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="nationality" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="013_nationality" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Nationality
                                             </label>
                                             <input
                                                 type="text"
-                                                id="nationality"
+                                                id="013_nationality"
                                                 placeholder="Start typing to search..."
                                                 list="nationalities"
                                                 required
@@ -2038,11 +2002,11 @@
                                         </div>
 
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="ethnicity" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="014_ethnicity" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Ethnicity
                                             </label>
                                             <select
-                                                id="ethnicity"
+                                                id="014_ethnicity"
                                                 required
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                             >
@@ -2062,53 +2026,206 @@
                                     <button class="accordion-header">💼 Employment Status</button>
                                     <div class="accordion-body">
                                         <div class="form-group" style="display: flex; align-items: center; margin-bottom: 10px; position: relative;">
-                                            <label for="employment" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="015_employment" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Employment Status
                                             </label>
                                             <select
-                                                id="employment"
+                                                id="015_employment"
                                                 class="form-group"
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                                 onchange="toggleConditionalSections()"
                                             >
                                                 <option value="" selected disabled>Select Employment Status...</option>
-                                                <!-- General Employment Statuses -->
-                                                <option value="full_time">Full-time</option>
-                                                <option value="part_time">Part-time</option>
-                                                <option value="freelance">Freelance</option>
-                                                <option value="contract">Contract</option>
-                                                <option value="intern">Intern</option>
-                                                <option value="self_employed">Self-employed</option>
-                                                <option value="unemployed">Unemployed</option>
+                                                <option value="employed">Employed</option>
+                                                <option value="self_employed">Self-Employed</option>
                                                 <option value="student">Student</option>
+                                                <option value="unemployed">Unemployed</option>
                                                 <option value="retired">Retired</option>
-                                                <option value="volunteer">Volunteer</option>
-                                                <!-- Ugandan Specific Employment Statuses -->
-                                                <option value="civil_servant">Civil Servant</option>
-                                                <option value="farmer">Farmer</option>
-                                                <!-- South African Specific Employment Statuses -->
-                                                <option value="domestic_worker">Domestic Worker</option>
-                                                <!-- Other -->
-                                                <option value="other">Other</option>
                                             </select>
                                         </div>
 
                                         <!-- Conditional Sections: Student, Business, Professional -->
+                                        <div class="conditional-section" id="employed-details" style="display: none; margin-top: 20px;">
+                                            <!-- Employer Name -->
+                                            <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
+                                                <label for="016_employer-name" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                    Employer Name
+                                                </label>
+
+                                                <input type="text" id="016_employer-name" class="form-control" placeholder="Enter your employer's name" />
+                                            </div>
+
+                                            <!-- Industry -->
+                                            <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
+                                                <label for="017_employment-industry" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                    Industry / Sector
+                                                </label>
+                                                <select id="017_employment-industry" class="form-control">
+                                                    <option value="" selected disabled>Select Industry...</option>
+                                                    <option value="healthcare">Healthcare</option>
+                                                    <option value="education">Education</option>
+                                                    <option value="agriculture">Agriculture</option>
+                                                    <option value="construction">Construction</option>
+                                                    <option value="mining">Mining</option>
+                                                    <option value="it">Information Technology</option>
+                                                    <option value="public_service">Public Service / Government</option>
+                                                    <option value="retail">Retail / Wholesale</option>
+                                                    <option value="transport">Transport / Logistics</option>
+                                                    <option value="manufacturing">Manufacturing</option>
+                                                    <option value="finance">Banking / Finance / Insurance</option>
+                                                    <option value="hospitality">Hospitality / Tourism</option>
+                                                    <option value="legal">Legal</option>
+                                                    <option value="ngo">NGO / Non-Profit</option>
+                                                    <option value="domestic">Domestic Work</option>
+                                                    <option value="security">Security Services</option>
+                                                    <option value="other">Other</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Job Title -->
+                                            <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
+                                                <label for="018_job-title" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                    Job Title / Role
+                                                </label>
+                                                <input type="text" id="018_job-title" class="form-control" placeholder="e.g. Nurse, Teacher, Welder" />
+                                            </div>
+
+                                            <!-- Work Type -->
+                                            <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
+                                                <label for="019_work-type" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                    Work Arrangement
+                                                </label>
+                                                <select id="019_work-type" class="form-control">
+                                                    <option value="" selected disabled>Select Work Type...</option>
+                                                    <option value="on_site">On-site</option>
+                                                    <option value="remote">Remote</option>
+                                                    <option value="hybrid">Hybrid (Remote + On-site)</option>
+                                                    <option value="field">Field-based</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Work Hours -->
+                                            <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
+                                                <label for="020_work-hours" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                    Typical Work Hours
+                                                </label>
+                                                <select id="020_work-hours" class="form-control">
+                                                    <option value="" selected disabled>Select...</option>
+                                                    <option value="standard">8am – 5pm</option>
+                                                    <option value="shift">Shift Work</option>
+                                                    <option value="flexible">Flexible / Freelance</option>
+                                                    <option value="extended">More than 10 hours/day</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Health Access -->
+                                            <div class="form-group" style="margin-bottom: 30px;">
+                                                <!-- Main Label: Question -->
+                                                <label
+                                                    class="MS-add-form-label"
+                                                    style="
+                                                        background-color: var(--primary);
+                                                        padding: 1rem 2rem;
+                                                        border-radius: 10px;
+                                                        color: #fff;
+                                                        display: inline-block;
+                                                        font-size: 1.3rem;
+                                                        font-weight: bold;
+                                                        margin-bottom: 25px;
+                                                        width: 100%;
+                                                        max-width: 700px;
+                                                        text-align: center;
+                                                        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                                                    "
+                                                >
+                                                    Do you have access to any of the following?
+                                                </label>
+
+                                                <!-- Checkbox Container -->
+                                                <div style="display: flex; flex-direction: column; gap: 20px;">
+                                                    <!-- Private Medical Insurance -->
+                                                    <div style="display: flex; align-items: center; gap: 15px; background-color: #f8f8f8; padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                                        <input type="checkbox" id="021_Access_To_Private_Insurance" value="Access_To_Private_Insurance" style="transform: scale(1.4); margin-right: 15px;" />
+                                                        <label for="021_Access_To_Private_Insurance" style="display: flex; flex-direction: column;">
+                                                            <span style="font-size: 1.1rem; color: #333; font-weight: bold;">Private Medical Insurance</span>
+                                                            <small style="color: #555;">Access to private medical coverage for emergencies and regular healthcare services.</small>
+                                                        </label>
+                                                    </div>
+
+                                                    <!-- Government Healthcare -->
+                                                    <div style="display: flex; align-items: center; gap: 15px; background-color: #f8f8f8; padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                                        <input type="checkbox" id="022_Access_To_Government_Healthcare" value="Access_To_Government_Healthcare" style="transform: scale(1.4); margin-right: 15px;" />
+                                                        <label for="022_Access_To_Government_Healthcare" style="display: flex; flex-direction: column;">
+                                                            <span style="font-size: 1.1rem; color: #333; font-weight: bold;">Government Healthcare</span>
+                                                            <small style="color: #555;">National health services or programs provided by the government for public health coverage.</small>
+                                                        </label>
+                                                    </div>
+
+                                                    <!-- Employer Clinic / Health Centre -->
+                                                    <div style="display: flex; align-items: center; gap: 15px; background-color: #f8f8f8; padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                                        <input type="checkbox" id="023_Access_To_Employer_Clinic" value="Access_To_Employer_Clinic" style="transform: scale(1.4); margin-right: 15px;" />
+                                                        <label for="023_Access_To_Employer_Clinic" style="display: flex; flex-direction: column;">
+                                                            <span style="font-size: 1.1rem; color: #333; font-weight: bold;">Employer Clinic / Health Centre</span>
+                                                            <small style="color: #555;">Healthcare services provided through your employer's on-site clinic or health center.</small>
+                                                        </label>
+                                                    </div>
+
+                                                    <!-- None Option -->
+                                                    <div style="display: flex; align-items: center; gap: 15px; background-color: #f8f8f8; padding: 15px 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+                                                        <input type="checkbox" id="024_Access_To_None" value="Access_To_None" style="transform: scale(1.4); margin-right: 15px;" />
+                                                        <label for="024_Access_To_None" style="display: flex; flex-direction: column;">
+                                                            <span style="font-size: 1.1rem; color: #333; font-weight: bold;">None</span>
+                                                            <small style="color: #555;">You do not have access to any of the healthcare options listed above.</small>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Commute -->
+                                            <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
+                                                <label for="025_commute" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                    Average Commute (One-way)
+                                                </label>
+                                                <select id="025_commute" class="form-control">
+                                                    <option value="" selected disabled>Select Commute Time...</option>
+                                                    <option value="under_15">Under 15 minutes</option>
+                                                    <option value="15_30">15 – 30 minutes</option>
+                                                    <option value="30_60">30 – 60 minutes</option>
+                                                    <option value="over_60">Over 1 hour</option>
+                                                </select>
+                                            </div>
+
+                                            <!-- Job Satisfaction -->
+                                            <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
+                                                <label for="026_job-satisfaction" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                    How satisfied are you with your current job?
+                                                </label>
+                                                <input type="range" id="026_job-satisfaction" min="1" max="5" step="1" />
+                                                <div style="display: flex; justify-content: space-between;">
+                                                    <small>Very Unsatisfied</small>
+                                                    <small>Very Satisfied</small>
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class="conditional-section" id="student-details" style="display: none;">
                                             <!-- Institution / Facility Picker -->
-                                            <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="institution" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
-                                                    Institution Name
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    id="institution"
-                                                    class="form-group"
-                                                    placeholder="Search for school, clinic, venue, etc."
-                                                    autocomplete="off"
-                                                    style="width: 100%; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px;"
-                                                />
+                                            <div class="form-group" style="margin-bottom: 5px; position: relative;">
+                                                <div style="display: grid; grid-template-columns: auto 1fr; align-items: center;">
+                                                    <label for="027_institution" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                        Institution Name
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="027_institution"
+                                                        class="form-group"
+                                                        placeholder="Search for school, clinic, venue, etc."
+                                                        autocomplete="off"
+                                                        style="width: 100%; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px;"
+                                                    />
+                                                </div>
+
+                                                <!-- Suggestions Box (moved outside of the grid and inside a relative wrapper) -->
                                                 <div
                                                     id="institution-suggestions"
                                                     class="MS-add-suggestion-box"
@@ -2117,13 +2234,23 @@
                                             </div>
 
                                             <script>
-                                                const institutionInput = document.getElementById("institution");
+                                                const institutionInput = document.getElementById("027_institution");
                                                 const institutionSuggestions = document.getElementById("institution-suggestions");
 
                                                 let institutionDebounce;
 
                                                 function escapeHTML(str) {
-                                                    return str.replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m]));
+                                                    return str.replace(
+                                                        /[&<>"']/g,
+                                                        (m) =>
+                                                            ({
+                                                                "&": "&amp;",
+                                                                "<": "&lt;",
+                                                                ">": "&gt;",
+                                                                '"': "&quot;",
+                                                                "'": "&#039;",
+                                                            }[m])
+                                                    );
                                                 }
 
                                                 function clearInstitutionSuggestions() {
@@ -2184,12 +2311,12 @@
                                             </script>
                                             <!-- Grade / Class (academic + student at event) -->
                                             <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="grade" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="028_grade" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Grade / Class
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    id="grade"
+                                                    id="028_grade"
                                                     class="form-group"
                                                     style="flex-grow: 1; min-width: 250px; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px;"
                                                     placeholder="e.g. Grade 8 or Year 2"
@@ -2198,11 +2325,11 @@
 
                                             <!-- Attendance Mode -->
                                             <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="attendance_mode" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="029_attendance_mode" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Attendance Mode
                                                 </label>
                                                 <select
-                                                    id="attendance_mode"
+                                                    id="029_attendance_mode"
                                                     class="form-group"
                                                     style="flex-grow: 1; min-width: 250px; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px;"
                                                 >
@@ -2216,11 +2343,11 @@
 
                                             <!-- Peer Support -->
                                             <div class="form-group context-hospital context-event-student" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="peer_support" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="030_peer_support" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Peer Support
                                                 </label>
                                                 <select
-                                                    id="peer_support"
+                                                    id="030_peer_support"
                                                     class="form-group"
                                                     style="flex-grow: 1; min-width: 250px; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px;"
                                                 >
@@ -2233,11 +2360,11 @@
 
                                             <!-- Reason for Visit -->
                                             <div class="form-group context-hospital context-event-student" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="visit_reason" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="031_visit_reason" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Reason for Visit
                                                 </label>
                                                 <select
-                                                    id="visit_reason"
+                                                    id="031_visit_reason"
                                                     class="form-group"
                                                     style="flex-grow: 1; min-width: 250px; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px;"
                                                 >
@@ -2251,11 +2378,11 @@
 
                                             <!-- Past Visits -->
                                             <div class="form-group context-hospital context-event-student" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="past_visits" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="032_past_visits" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Previous Visits
                                                 </label>
                                                 <select
-                                                    id="past_visits"
+                                                    id="032_past_visits"
                                                     class="form-group"
                                                     style="flex-grow: 1; min-width: 250px; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px;"
                                                 >
@@ -2268,11 +2395,11 @@
 
                                             <!-- Safe at School or Home -->
                                             <div class="form-group context-hospital context-event-student" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="safe_env" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="033_safe_env" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Do you feel safe?
                                                 </label>
                                                 <select
-                                                    id="safe_env"
+                                                    id="033_safe_env"
                                                     class="form-group"
                                                     style="flex-grow: 1; min-width: 250px; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px;"
                                                 >
@@ -2285,11 +2412,11 @@
 
                                             <!-- Bullying -->
                                             <div class="form-group context-hospital context-event-student" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="bullying" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="034_bullying" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Experience of Bullying
                                                 </label>
                                                 <select
-                                                    id="bullying"
+                                                    id="034_bullying"
                                                     class="form-group"
                                                     style="flex-grow: 1; min-width: 250px; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px;"
                                                 >
@@ -2301,8 +2428,8 @@
                                             </div>
                                         </div>
                                         <script>
-                                            const venueSelector = document.getElementById("assessment_location");
-                                            const participantRole = document.getElementById("employment"); // You need this dropdown too
+                                            const venueSelector = document.getElementById("001_evaluation_location_type");
+                                            const participantRole = document.getElementById("015_employment"); // You need this dropdown too
 
                                             function updateContextFields() {
                                                 const venue = venueSelector.value;
@@ -2330,37 +2457,37 @@
 
                                         <div class="conditional-section" id="business-details" style="display: none;">
                                             <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="business-name" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="035_business-name" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Business Name:
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    id="business-name"
+                                                    id="035_business-name"
                                                     placeholder="Enter business name"
                                                     required
                                                     style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                                 />
                                             </div>
                                             <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="business-sector" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="036_business-sector" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Business Sector:
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    id="business-sector"
+                                                    id="036_business-sector"
                                                     placeholder="Enter business sector"
                                                     required
                                                     style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                                 />
                                             </div>
                                             <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="business-employees" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="037_business-employees" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Number of Employees:
                                                 </label>
 
                                                 <input
                                                     type="number"
-                                                    id="business-employees"
+                                                    id="037_business-employees"
                                                     placeholder="Enter number of employees"
                                                     required
                                                     style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
@@ -2370,84 +2497,96 @@
 
                                         <div class="conditional-section" id="professional-details" style="display: none;">
                                             <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="professional-employer" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="038_professional-employer" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Employer:
                                                 </label>
 
                                                 <input
                                                     type="text"
-                                                    id="professional-employer"
+                                                    id="038_professional-employer"
                                                     placeholder="Enter employer's name"
                                                     required
                                                     style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                                 />
                                             </div>
                                             <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="professional-position" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="039_professional-position" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Position:
                                                 </label>
 
                                                 <input
                                                     type="text"
-                                                    id="professional-position"
+                                                    id="039_professional-position"
                                                     placeholder="Enter your position"
                                                     required
                                                     style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                                 />
                                             </div>
                                             <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                                <label for="professional-position" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                                <label for="040_professional-position" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                     Years of Experience:
                                                 </label>
 
                                                 <input
                                                     type="number"
-                                                    id="professional-position"
+                                                    id="040_professional-position"
                                                     placeholder="Enter years of experience"
                                                     required
                                                     style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                                 />
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                <!-- Add your JavaScript below -->
 
-                                        <!-- Add your JavaScript below -->
+                                <script>
+                                    // Function to toggle the conditional sections based on the selected employment status
+                                    function toggleConditionalSections() {
+                                        const employmentStatus = document.getElementById("015_employment").value;
 
-                                        <script>
-                                            // Function to toggle the conditional sections based on the selected employment status
-                                            function toggleConditionalSections() {
-                                                const employmentStatus = document.getElementById("employment").value;
+                                        // Hide all sections by default
+                                        document.getElementById("employed-details").style.display = "none";
+                                        document.getElementById("student-details").style.display = "none";
+                                        document.getElementById("business-details").style.display = "none";
+                                        document.getElementById("professional-details").style.display = "none";
 
-                                                // Hide all sections by default
-                                                document.getElementById("student-details").style.display = "none";
-                                                document.getElementById("business-details").style.display = "none";
-                                                document.getElementById("professional-details").style.display = "none";
+                                        // Show the appropriate section based on the selected employment status
+                                        if (employmentStatus === "student") {
+                                            document.getElementById("student-details").style.display = "block";
+                                        } else if (employmentStatus === "self_employed" || employmentStatus === "freelance") {
+                                            document.getElementById("business-details").style.display = "block"; // Assume business details for self-employed/freelance
+                                        } else if (employmentStatus === "employed") {
+                                            document.getElementById("employed-details").style.display = "block";
+                                        }
+                                    }
 
-                                                // Show the appropriate section based on the selected employment status
-                                                if (employmentStatus === "student") {
-                                                    document.getElementById("student-details").style.display = "block";
-                                                } else if (employmentStatus === "self_employed" || employmentStatus === "freelance") {
-                                                    document.getElementById("business-details").style.display = "block"; // Assume business details for self-employed/freelance
-                                                } else if (employmentStatus === "full_time" || employmentStatus === "part_time" || employmentStatus === "contract" || employmentStatus === "intern") {
-                                                    document.getElementById("professional-details").style.display = "block";
-                                                }
-                                            }
+                                    // Function to toggle the accordion body visibility
+                                    function toggleAccordion(sectionId) {
+                                        const sectionBody = document.querySelector(`#${sectionId} .accordion-body`);
+                                        if (sectionBody.style.display === "none" || sectionBody.style.display === "") {
+                                            sectionBody.style.display = "block";
+                                        } else {
+                                            sectionBody.style.display = "none";
+                                        }
+                                    }
+                                </script>
 
-                                            // Function to toggle the accordion body visibility
-                                            function toggleAccordion(sectionId) {
-                                                const sectionBody = document.querySelector(`#${sectionId} .accordion-body`);
-                                                if (sectionBody.style.display === "none" || sectionBody.style.display === "") {
-                                                    sectionBody.style.display = "block";
-                                                } else {
-                                                    sectionBody.style.display = "none";
-                                                }
-                                            }
-                                        </script>
+                                <div class="accordion-item">
+                                    <!-- EDUCATION STATUS -->
+                                    <button class="accordion-header" style="display: flex; align-items: center; gap: 10px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="red" viewBox="0 0 24 24" width="24" height="24">
+                                            <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zm0 11.09L4.47 9 12 4.91 19.53 9 12 14.09zM6 10.47v2.53c0 2.42 3.58 4.4 6 4.4s6-1.98 6-4.4v-2.53l-6 3.27-6-3.27z" />
+                                        </svg>
+                                        <span>Education Status</span>
+                                    </button>
+                                    <div class="accordion-body">
                                         <div class="form-group" style="display: grid; grid-template-columns: auto 1fr; align-items: center; margin-bottom: 5px;">
-                                            <label for="education" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
+                                            <label for="041_education" class="MS-add-form-label" style="background-color: var(--primary); padding: 0.5rem; border-radius: 5px; color: #fff; margin-right: 10px;">
                                                 Education Level
                                             </label>
                                             <select
-                                                id="education"
+                                                id="041_education"
                                                 class="form-group"
                                                 style="flex-grow: 1; font-family: 'Poppins', sans-serif; padding: 12px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);"
                                             >
@@ -2598,7 +2737,7 @@
                                     </div>
 
                                     <script>
-localStorage.clear();
+                                        localStorage.clear();
                                         document.addEventListener("DOMContentLoaded", () => {
                                             const consentCheckbox = document.getElementById("consent-chkbx");
                                             const consentBtn = document.getElementById("chk-header");
@@ -2606,17 +2745,18 @@ localStorage.clear();
                                             // ✅ Form validation logic
                                             function validateFormFields() {
                                                 const fields = {
-                                                    locationtype: document.getElementById("assessment_location"),
-                                                    theaddress: document.getElementById("MS-add_address"),
-                                                    title: document.getElementById("title"),
-                                                    firstName: document.getElementById("first-name"),
-                                                    lastName: document.getElementById("last-name"),
-                                                    email: document.getElementById("email"),
-                                                    phone: document.getElementById("phone"),
-                                                    ageGroup: document.getElementById("age-group"),
-                                                    employment: document.getElementById("employment"),
-                                                    education: document.getElementById("education"),
-                                                    gender: document.getElementById("gender"),
+                                                    locationtype: document.getElementById("001_evaluation_location_type"),
+                                                    theaddress: document.getElementById("002_evaluation_address"),
+                                                    title: document.getElementById("004_title"),
+                                                    firstName: document.getElementById("005_first-name"),
+                                                    lastName: document.getElementById("006_last-name"),
+                                                    email: document.getElementById("007_email"),
+                                                    phone: document.getElementById("008_phone"),
+                                                    gender: document.getElementById("009_gender"),
+                                                    ageGroup: document.getElementById("010_age-group"),
+                                                    ageGroup: document.getElementById("011_marital-status"),
+                                                    employment: document.getElementById("015_employment"),
+                                                    education: document.getElementById("041_education"),
                                                 };
 
                                                 let isValid = true;
@@ -2649,7 +2789,7 @@ localStorage.clear();
                                             });
 
                                             // ✅ Auto-disable consent button on any form change
-                                            const fieldIds = ["assessment_location", "MS-add_address", "title", "first-name", "last-name", "email", "phone", "age-group", "employment", "education", "gender"];
+                                            const fieldIds = ["001_evaluation_location_type", "MS-add_address", "004_title", "005_first-name", "006_last-name", "007_email", "phone", "age-group", "015_employment", "education", "gender"];
 
                                             fieldIds.forEach((id) => {
                                                 const field = document.getElementById(id);
@@ -2664,7 +2804,6 @@ localStorage.clear();
                                                     });
                                                 }
                                             });
-
 
                                             // ✅ Final check on consent button click
                                             consentBtn.addEventListener("click", (e) => {
@@ -2684,56 +2823,108 @@ localStorage.clear();
                                                         consentBtn.disabled = false;
                                                         consentCheckbox.checked = true;
                                                     }
-                                                    
                                                 }, 50);
                                             });
                                         });
 
-document.addEventListener("DOMContentLoaded", () => {
-    const firstNameInput = document.getElementById("first-name");
+                                        document.addEventListener("DOMContentLoaded", () => {
+                                            const firstNameInput = document.getElementById("005_first-name");
 
-    if (firstNameInput) {
-        // Update localStorage on blur (when user leaves the input)
-        firstNameInput.addEventListener("blur", () => {
-            const firstNames = firstNameInput.value.trim();
-            if (firstNames) {
-                localStorage.setItem("firstNames", firstNames);
+                                            if (firstNameInput) {
+                                                // Update localStorage on blur (when user leaves the input)
+                                                firstNameInput.addEventListener("blur", () => {
+                                                    const firstNames = firstNameInput.value.trim();
+                                                });
+
+                                                // Optional: Update localStorage on typing (live as they type)
+                                                firstNameInput.addEventListener("input", () => {
+                                                    const firstNames = firstNameInput.value.trim();
+                                                });
+                                            }
+                                        });
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const inputs = document.querySelectorAll("input, textarea, select");
+
+        // Add timestamp once on initial load
+        const timestampKey = "form_000_evaluationDate";
+        if (!localStorage.getItem(timestampKey)) {
+            const timestamp = new Date().toISOString();
+            localStorage.setItem(timestampKey, timestamp);
+
+            const orderKey = "form_field_order";
+            const existingOrder = localStorage.getItem(orderKey);
+            const orderList = existingOrder ? JSON.parse(existingOrder) : [];
+
+            if (!orderList.includes(timestampKey)) {
+                orderList.unshift(timestampKey); // Add at the beginning
+                localStorage.setItem(orderKey, JSON.stringify(orderList));
             }
-        });
-
-        // Optional: Update localStorage on typing (live as they type)
-        firstNameInput.addEventListener("input", () => {
-            const firstNames = firstNameInput.value.trim();
-            if (firstNames) {
-                localStorage.setItem("firstNames", firstNames);
-            }
-        });
-    }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const inputs = document.querySelectorAll("input, textarea, select");
-
-    inputs.forEach((input) => {
-        const key = `form_${input.id || input.name}`;
-
-        // Restore previous value from localStorage (optional)
-        const savedValue = localStorage.getItem(key);
-        if (savedValue !== null) {
-            input.value = savedValue;
         }
 
-        // Save value to localStorage when input changes
-        input.addEventListener("input", () => {
-            localStorage.setItem(key, input.value.trim());
+        const saveToLocal = (input) => {
+            const key = `form_${input.id || input.name}`;
+            let value;
+
+            if (input.type === "checkbox") {
+                value = input.checked;
+            } else if (input.type === "radio") {
+                if (input.checked) {
+                    value = input.value;
+                } else {
+                    return; // Only save the checked radio
+                }
+            } else {
+                value = input.value.trim();
+            }
+
+            localStorage.setItem(key, value);
+
+            // Save the field key to an ordered list if not already added
+            const orderKey = "form_field_order";
+            const existingOrder = localStorage.getItem(orderKey);
+            const orderList = existingOrder ? JSON.parse(existingOrder) : [];
+
+            if (!orderList.includes(key)) {
+                orderList.push(key);
+                localStorage.setItem(orderKey, JSON.stringify(orderList));
+            }
+        };
+
+        inputs.forEach((input) => {
+            const key = `form_${input.id || input.name}`;
+
+            // Restore from localStorage
+            const savedValue = localStorage.getItem(key);
+            if (savedValue !== null) {
+                if (input.type === "checkbox") {
+                    input.checked = savedValue === "true";
+                } else if (input.type === "radio") {
+                    if (input.value === savedValue) input.checked = true;
+                } else {
+                    input.value = savedValue;
+                }
+            }
+
+            // Event listeners to save data
+            input.addEventListener("input", () => saveToLocal(input));
+            input.addEventListener("change", () => saveToLocal(input));
+            input.addEventListener("blur", () => saveToLocal(input));
         });
 
-        // Optionally update on blur too
-        input.addEventListener("blur", () => {
-            localStorage.setItem(key, input.value.trim());
+        // MutationObserver — catch autocomplete changes
+        const observer = new MutationObserver(() => {
+            inputs.forEach(saveToLocal);
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            characterData: true,
         });
     });
-});
 
 
                                     </script>
@@ -2920,7 +3111,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 letter-spacing: 0.4px;
                 transition: background-color 0.3s ease, color 0.3s ease;
             }
-
         </style>
 
         <!-- SCRIPT -->
@@ -3158,7 +3348,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         applyTheme(e.target.value);
                     });
                 }
-
             });
 
             // Apply the selected theme
@@ -3178,7 +3367,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem("theme", themeName);
                 currentTheme = themeName;
             }
-
 
             // Adjust text color based on theme background
             function setHeroDescriptionTextColor() {

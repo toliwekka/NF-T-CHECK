@@ -1,881 +1,327 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>NFT Consult | Addressing the Elephant in the Room: A Journey to Mental Well-being</title>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>T|Check NFT Consult | Addressing the Elephant in the Room: A Journey to Mental Well-being</title>
         <link rel="icon" type="image/png" href="logo.jpeg" />
-
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
-        <style>
-            :root {
-                --primary: #2ecc71;
-                --primary-light: #3ae074;
-                --primary-dark: #1e8e4e;
-                --bg: #edf8f6;
-                --card-bg: rgba(255, 255, 255, 0.15);
-                --text-color: #145a32;
-                --accent: #b8e6d4;
-                --hover-bg: #d4f0e4;
-                --button-bg: #2ecc71;
-                --button-hover-bg: #28a745;
-                --shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
-            }
-
-            body {
-                margin: 0;
-                font-family: "Poppins", sans-serif;
-                background: var(--bg);
-                color: var(--text-color);
-                padding: 2rem 1rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                min-height: 100vh;
-                position: relative;
-            }
-
-            .theme-switcher {
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                z-index: 1000;
-            }
-
-            .form-select {
-                padding: 0.5rem 1rem;
-                border-radius: 8px;
-                border: none;
-                background: var(--card-bg);
-                color: var(--text-color);
-                font-weight: 600;
-                box-shadow: var(--shadow);
-            }
-
-            .survey-container {
-                max-width: 800px;
-                width: 100%;
-                background: var(--card-bg);
-                border-radius: 20px;
-                backdrop-filter: blur(20px);
-                box-shadow: var(--shadow);
-                padding: 2rem;
-                text-align: center;
-            }
-
-            .flip-badge {
-                width: 60px;
-                height: 60px;
-                background: var(--primary);
-                color: white;
-                border-radius: 50%;
-                font-weight: bold;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.3rem;
-                margin: 0 auto 1.5rem;
-                box-shadow: var(--shadow);
-                animation: popIn 0.4s ease-in-out;
-            }
-
-            .survey-card {
-                background: rgba(255, 255, 255, 0.25);
-                padding: 2rem;
-                border-radius: 16px;
-                box-shadow: var(--shadow);
-                margin-bottom: 2rem;
-            }
-
-            .question-intro {
-                font-size: 1.2rem;
-                font-weight: 600;
-                color: var(--primary-dark);
-                margin-bottom: 0.25rem;
-            }
-
-            .question-context {
-                font-size: 0.95rem;
-                opacity: 0.7;
-                margin-bottom: 1rem;
-            }
-
-            .question-text {
-                font-size: 1.6rem;
-                font-weight: bold;
-                color: var(--text-color);
-            }
-
-            .option-card {
-                background: rgba(255, 255, 255, 0.2);
-                border-radius: 12px;
-                padding: 1.5rem 1rem;
-                box-shadow: var(--shadow);
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 1rem;
-            }
-
-            .option {
-                padding: 0.7rem 1.5rem;
-                background: var(--primary-light);
-                color: white;
-                border: none;
-                border-radius: 30px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: background 0.2s ease-in-out;
-            }
-
-            .option:hover {
-                background: var(--primary-dark);
-            }
-
-            .option {
-                padding: 0.7rem 1.5rem;
-                background: var(--primary-light);
-                color: var(--option-text-color, #ffffff); /* fallback to white */
-                border: none;
-                border-radius: 30px;
-                font-weight: 700;
-                font-size: 1rem;
-                letter-spacing: 0.1px;
-                cursor: pointer;
-                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); /* subtle shadow for more visual lift */
-                transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
-            }
-
-            .option:hover {
-                background: var(--primary-dark);
-                color: var(--option-hover-text-color, #fff);
-            }
-
-            .next-button {
-                display: block;
-                margin: 2rem auto 0;
-                background: var(--primary);
-                color: white;
-                padding: 0.9rem 2rem;
-                border: none;
-                border-radius: 30px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: transform 0.2s ease;
-            }
-
-            .next-button:hover {
-                transform: scale(1.05);
-            }
-
-            @keyframes popIn {
-                from {
-                    transform: scale(0.8);
-                    opacity: 0;
-                }
-                to {
-                    transform: scale(1);
-                    opacity: 1;
-                }
-            }
-
-            .option.selected {
-                background: var(--button-bg);
-                color: #fff;
-                transform: scale(1.05);
-            }
-
-            html,
-            body {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                display: flex;
-                flex-direction: column;
-            }
-
-            .page-wrapper {
-                flex: 1;
-            }
-
-            .sticky-footer {
-                background: rgba(0, 0, 0, 0.3);
-                color: #fff;
-                text-align: center;
-                padding: 1rem 0;
-                font-size: 0.9rem;
-                backdrop-filter: blur(10px);
-                width: 100%;
-            }
-
-            .sticky-footer a {
-                color: #ffd3a5;
-                text-decoration: none;
-                margin: 0 0.5rem;
-            }
-
-            .sticky-footer a:hover {
-                text-decoration: underline;
-            }
-
-            .continue-button {
-                margin: 2rem auto 0;
-                padding: 0.8rem 2rem;
-                background: var(--primary);
-                color: white;
-                font-weight: 600;
-                font-size: 1rem;
-                border: none;
-                border-radius: 30px;
-                cursor: pointer;
-                transition: background 0.3s ease;
-                display: block;
-                text-align: center;
-            }
-
-            .continue-button:hover {
-                background: var(--button-hover-bg);
-            }
-
-            .option-card {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 1rem;
-                margin-top: 2rem;
-            }
-
-            .option {
-                background: var(--primary-light);
-                color: var(--option-text-color, #fff);
-                border: none;
-                border-radius: 30px;
-                font-weight: 600;
-                padding: 0.7rem 1.5rem;
-                font-size: 1rem;
-                cursor: pointer;
-                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-                transition: background 0.2s ease-in-out;
-                max-width: 100%;
-                white-space: normal;
-                text-align: center;
-                line-height: 1.4;
-            }
-
-            /* Automatically make longer options full width */
-            .option.long-option {
-                flex: 1 1 100%;
-            }
-
-            /* Optional: better layout for small screens */
-            @media (max-width: 576px) {
-                .option {
-                    flex: 1 1 100%;
-                }
-            }
-
-            .option-cards-wrapper {
-                display: flex;
-                flex-direction: column;
-                gap: 2rem;
-                width: 100%;
-            }
-
-            .option-card-group {
-                background: var(--card-bg);
-                border-radius: 16px;
-                padding: 1.5rem;
-                box-shadow: var(--shadow);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-
-            .card-1 .option {
-                flex: 1 1 100%;
-                text-align: center;
-            }
-
-            .card-2 {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                gap: 1rem;
-            }
-
-            .card-3 .option {
-                flex: 1 1 100%;
-                text-align: center;
-            }
-
-            .option {
-                padding: 0.7rem 1.5rem;
-                background: var(--primary-light);
-                color: var(--option-text-color, #fff);
-                border: none;
-                border-radius: 30px;
-                font-weight: 600;
-                font-size: 1rem;
-                cursor: pointer;
-                transition: background 0.2s ease-in-out;
-                white-space: normal;
-                text-align: center;
-                line-height: 1.4;
-            }
-
-            .option:hover {
-                background: var(--primary-dark);
-            }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Base container styling */
-.survey-container {
-    width: 100%;
-    height: auto;
-    padding: 20px;
-    box-sizing: border-box;
-    font-size: 1vw; /* Text size adjusts based on viewport width */
-    border-radius: 8px;
-    margin: 0 auto;
-    transition: all 0.3s ease;
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 1200px) {
-    .survey-container {
-        font-size: 2.5vw; /* Adjust text size slightly larger for larger screens */
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --emoji-scale: 3rem;
+      --label-scale: 1rem;
+      --question-scale: 2rem;
     }
-}
 
-@media (max-width: 768px) {
-    .survey-container {
-        font-size: 3vw; /* Adjust text size slightly larger for medium screens */
-        padding: 15px; /* Adjust padding for smaller screens */
+    @media (max-width: 768px) {
+      :root {
+        --emoji-scale: 2.5rem;
+        --label-scale: 0.9rem;
+        --question-scale: 1.5rem;
+      }
     }
-}
 
-@media (max-width: 480px) {
-    .survey-container {
-        font-size: 4vw; /* Increase text size for mobile */
-        padding: 10px; /* Reduce padding */
+    @media (max-width: 480px) {
+      :root {
+        --emoji-scale: 2rem;
+        --label-scale: 0.85rem;
+        --question-scale: 1.2rem;
+      }
     }
-}
 
-/* Optional: Make sure text size doesn't become too small or large */
-.survey-container h1,
-.survey-container p {
-    font-size: calc(1rem + 2vw); /* Uses both rem and vw for flexible font size */
-}
-
-/* Optional: Add a scrollable container */
-.survey-container {
-    max-height: 90vh; /* Limits height to 90% of the viewport height */
-    overflow-y: auto; /* Adds scrolling if content exceeds the max height */
-}
-
-
-
-
-
-
-
-
-
-
-
-/* Base container styling */
-.survey-container {
-    width: 100%;
-    height: auto;
-    padding: 20px;
-    box-sizing: border-box;
-    font-size: 1rem; /* Set a solid base font size */
-    line-height: 1.6;
-    border-radius: 8px;
-    margin: 0 auto;
-    max-height: 90vh;
-    overflow-y: auto;
-    transition: all 0.3s ease;
-}
-
-/* Headers and paragraph scaling smoothly */
-.survey-container h1 {
-    font-size: clamp(1.5rem, 2vw + 1rem, 2.75rem); /* Responsive between 1.5rem and 2.75rem */
-}
-
-.survey-container p {
-    font-size: clamp(1rem, 1.25vw + 0.5rem, 1.25rem); /* Responsive but controlled */
-}
-
-/* Responsive tweaks */
-@media (max-width: 768px) {
-    .survey-container {
-        padding: 16px;
+    .emoji {
+      font-size: var(--emoji-scale);
     }
-}
 
-@media (max-width: 480px) {
-    .survey-container {
-        padding: 12px;
+    .label {
+      font-size: var(--label-scale);
+      margin-top: 0.5rem;
+      font-weight: 600;
+      text-align: center;
     }
+
+    .question-text {
+      font-size: var(--question-scale);
+    }
+
+    .mood-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      padding: 1.25rem;
+      border-radius: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      width: 100px;
+      height: 140px;
+    }
+
+    @media (min-width: 640px) {
+      .mood-card { width: 110px; height: 160px; }
+    }
+
+    @media (min-width: 768px) {
+      .mood-card { width: 120px; height: 180px; }
+    }
+
+    .mood-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .selected {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .fade {
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .hiddenFade {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .visibleFade {
+      opacity: 1;
+    }
+
+    .question-counter-circle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-width: 4px;
+      border-style: solid;
+      border-radius: 9999px;
+      width: 60px;
+      height: 60px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .question-counter-circle {
+        width: 80px;
+        height: 80px;
+        font-size: 1.5rem;
+      }
+    }
+.fade-out {
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
 }
+  </style>
+</head>
+<body id="body" class="bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen flex flex-col items-center justify-center text-white p-4 relative touch-none">
 
-        </style>
-    </head>
-    <body>
-        <!-- Main content area -->
-        <div class="page-wrapper">
-            <!-- Theme switcher -->
-            <div class="theme-switcher">
-                <select id="themeSelect" class="form-select">
-                    <option value="default" selected>🌿 Mint Fresh</option>
-                    <option value="fieryRed">🔥 Fiery Red</option>
-                    <option value="blushRose">🌸 Blush Rose</option>
-                    <option value="midnightDark">🌚 Midnight Dark</option>
-                    <option value="sereneLavender">💜 Serene Lavender</option>
-                    <option value="oceanBreeze">🌊 Ocean Breeze</option>
-                    <option value="goldenSunset">🌅 Golden Sunset</option>
-                    <option value="softStone">🪶 Soft Stone</option>
-                    <option value="softBlush">💖 Soft Blush</option>
-                </select>
-            </div>
+  <audio id="soundSelect" src="Surrender_To_Love.mp3"></audio>
+  <audio id="soundFinish" src="https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.mp3"></audio>
+  <audio id="soundBG" src="smooth-chill-jazzy.mp3" loop></audio>
 
-            <div id="chkpt" class="survey-container">
-                <h1 class="text-center mb-4" style="color: var(--primary); font-weight: 700;">
-                    Begin Your T|Check Self-Discovery Journey
-                </h1>
+  <div class="absolute top-4 right-4 flex items-center gap-4">
+    <select id="themeSelector" class="bg-white text-black px-3 py-1 rounded shadow">
+      <option value="default" selected>🌿 Mint Fresh</option>
+      <option value="fieryRed">🔥 Fiery Red</option>
+      <option value="blushRose">🌸 Blush Rose</option>
+      <option value="midnightDark">🌚 Midnight Dark</option>
+      <option value="sereneLavender">💜 Serene Lavender</option>
+      <option value="oceanBreeze">🌊 Ocean Breeze</option>
+      <option value="goldenSunset">🌅 Golden Sunset</option>
+      <option value="softStone">🪶 Soft Stone</option>
+      <option value="softBlush">💖 Soft Blush</option>
+    </select>
+    <button id="musicToggle" class="bg-white text-black px-3 py-1 rounded shadow">🔈 Music</button>
+  </div>
 
-                <div class="flip-badge" id="questionBadge">1</div>
+  <div id="avatarMood" class="text-5xl mb-4 animate-bounce">😐</div>
 
-                <div class="survey-card">
-                    <h3 class="question-intro" id="questionSection">Section A</h3>
-                    <p class="question-context" id="questionMeta">During the past 14 days</p>
-                    <p class="question-text" id="questionText">I’ve been feeling optimistic about the future.</p>
-                </div>
+  <div class="max-w-4xl w-full px-10 py-14 rounded-3xl bg-white/10 backdrop-blur-2xl border border-white/20 shadow-[0_20px_60px_rgba(255,255,255,0.15)] transition-all duration-700 ease-in-out transform hover:scale-[1.015]">
+    <div id="questionCounterWrapper" class="flex flex-col items-center mb-10">
+      <div id="questionCounterCircle" class="question-counter-circle border-red-400 animate-pulse bg-gradient-to-br from-white/30 to-white/5 text-white shadow-inner shadow-white/10 backdrop-blur-xl">1</div>
+      <div class="text-2xl mt-4 text-white/90 font-light tracking-widest uppercase">Over the past 14 days</div>
+    </div>
 
-                <div class="option-card" id="optionsContainer">
-                    <!-- Options injected -->
-                </div>
-                <button
-                    id="continueBtn"
-                    class="continue-button"
-                    style="
-                        display: none;
-                        margin-top: 2rem;
-                        padding: 0.8rem 2rem;
-                        font-weight: 600;
-                        font-size: 1rem;
-                        border: none;
-                        border-radius: 30px;
-                        background-color: var(--button-bg);
-                        color: white;
-                        cursor: pointer;
-                        transition: background-color 0.3s ease;
-                    "
-                >
-                    Continue
-                </button>
-            </div>
+    <div id="questionContainer" class="mb-10 flex items-center justify-center min-h-[100px] text-center">
+      <p class="question-text font-semibold text-white leading-snug tracking-tight animate-fade-in max-w-2xl"></p>
+    </div>
 
-        </div>
-        <!-- Footer (sticks to bottom when content is short) -->
-        <footer class="sticky-footer">
-            <p>
-                &copy; NFT Consult | Powered by Toli Wekka. All rights reserved. |
-                <a href="#">Privacy</a>
-                |
-                <a href="#">Terms</a>
-            </p>
-        </footer>
+    <div id="moodOptions" class="flex justify-center gap-6 flex-wrap mt-6 px-6"></div>
 
-        <!-- STYLES -->
-        <style>
-            .hero-description {
-                font-size: 1.5rem;
-                font-weight: 700;
-                color: #fff;
-                background-color: var(--primary-dark, #5a0c0c);
-                padding: 1.2rem 1.5rem;
-                border-radius: 12px;
-                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-                max-width: 100vw;
-                margin: 2rem auto;
-                text-align: center;
-                line-height: 1.6;
-                letter-spacing: 0.4px;
-                transition: background-color 0.3s ease, color 0.3s ease;
-            }
+    <div id="selectedFeedback" class="mt-10 text-xl sm:text-2xl font-semibold text-yellow-300 text-center transition-opacity duration-500 ease-in-out opacity-90"></div>
+    <div id="completionMessage" class="mt-12 text-2xl sm:text-3xl font-extrabold hidden text-green-300 text-center animate-fade-in tracking-wide"></div>
+  </div>
+
+  <script>
+    const questions = [
+      "I’ve been feeling optimistic about the future.",
+      "I’ve been feeling useful",
+      "I’ve been feeling relaxed",
+      "I’ve been feeling interested in other people",
+      "I’ve had energy to spare",
+      "I’ve been dealing with problems well",
+      "I’ve been thinking clearly",
+      "I’ve been feeling good about myself",
+      "I’ve been feeling close to other people",
+      "I’ve been feeling confident",
+      "I’ve been able to make up my own mind about things",
+      "I’ve been feeling loved",
+      "I’ve been interested in new things",
+      "I've been feeling cheerful"
+    ];
+
+    const options = [
+      { label: "Not at All", emoji: "😞", color: "bg-red-500", score: 1 },
+      { label: "Rarely", emoji: "😕", color: "bg-orange-400", score: 2 },
+      { label: "Some of the Time", emoji: "😐", color: "bg-yellow-300 text-black", score: 3 },
+      { label: "Often", emoji: "🙂", color: "bg-green-400", score: 4 },
+      { label: "All the Time", emoji: "😄", color: "bg-blue-500", score: 5 }
+    ];
+
+    const themes = [
+      { border: 'border-red-400', anim: 'animate-pulse' },
+      { border: 'border-orange-400', anim: 'animate-bounce' },
+      { border: 'border-yellow-300', anim: 'animate-spin' },
+      { border: 'border-green-400', anim: 'animate-ping' },
+      { border: 'border-blue-500', anim: 'animate-bounce' }
+    ];
+
+    const themePresets = {
+      default: ['from-slate-900', 'to-slate-800'],
+      fieryRed: ['from-red-700', 'to-red-900'],
+      blushRose: ['from-pink-300', 'to-pink-500'],
+      midnightDark: ['from-gray-900', 'to-black'],
+      sereneLavender: ['from-purple-300', 'to-indigo-600'],
+      oceanBreeze: ['from-cyan-400', 'to-blue-600'],
+      goldenSunset: ['from-yellow-400', 'to-orange-500'],
+      softStone: ['from-zinc-300', 'to-gray-400'],
+      softBlush: ['from-rose-200', 'to-pink-300']
+    };
+
+    let currentIndex = 0;
+    let totalScore = 0;
+    const responses = [];
+
+    const counterCircle = document.getElementById('questionCounterCircle');
+    const questionContainer = document.getElementById('questionContainer');
+    const moodOptionsEl = document.getElementById('moodOptions');
+    const feedback = document.getElementById('selectedFeedback');
+    const completionMessage = document.getElementById('completionMessage');
+    const body = document.getElementById('body');
+    const themeSelector = document.getElementById('themeSelector');
+    const avatar = document.getElementById('avatarMood');
+    const soundSelect = document.getElementById('soundSelect');
+    const soundFinish = document.getElementById('soundFinish');
+    const soundBG = document.getElementById('soundBG');
+    const musicToggle = document.getElementById('musicToggle');
+
+    musicToggle.onclick = () => {
+      if (soundBG.paused) {
+        soundBG.play();
+        musicToggle.textContent = '🔊 Music';
+      } else {
+        soundBG.pause();
+        musicToggle.textContent = '🔈 Music';
+      }
+    };
+
+    function updateAvatar(score) {
+      avatar.textContent = score < 20 ? "😞" : score < 35 ? "😐" : score < 50 ? "🙂" : "😄";
+    }
+
+    function renderQuestion(idx) {
+      const theme = themes[idx % themes.length];
+      counterCircle.innerText = idx + 1;
+      counterCircle.className = `question-counter-circle ${theme.border} ${theme.anim}`;
+      const questionP = questionContainer.querySelector('p');
+      questionP.classList.remove("visibleFade");
+      questionP.classList.add("hiddenFade");
+
+      setTimeout(() => {
+        questionP.innerText = questions[idx];
+        questionP.classList.remove("hiddenFade");
+        questionP.classList.add("visibleFade");
+      }, 100);
+
+      moodOptionsEl.innerHTML = '';
+      options.forEach(opt => {
+        const card = document.createElement('div');
+        card.className = `mood-card ${opt.color}`;
+        card.innerHTML = `<div class="emoji">${opt.emoji}</div><div class="label">${opt.label}</div>`;
+        card.onclick = () => selectAnswer(opt, card);
+        moodOptionsEl.appendChild(card);
+      });
+
+      feedback.innerText = '';
+    }
+
+    function selectAnswer(opt, cardEl) {
+      soundSelect.play();
+      cardEl.classList.add('selected');
+      feedback.innerText = `You selected: "${opt.label}"`;
+
+      totalScore += opt.score;
+      responses.push({ q: questions[currentIndex], a: opt.label, s: opt.score });
 
 
-            .close-btn {
-                position: absolute;
-                top: 20px;
-                right: 30px;
-                background: var(--primary, #930d0e);
-                color: #fff;
-                border: none;
-                padding: 10px 18px;
-                font-size: 1rem;
-                border-radius: 8px;
-                cursor: pointer;
-                z-index: 10000;
-            }
+      setTimeout(() => {
+        cardEl.classList.remove('selected');
+        currentIndex++;
 
-            .option.selected {
-                background-color: var(--primary-dark);
-                color: #fff;
-            }
+        if (currentIndex < questions.length) {
+          renderQuestion(currentIndex);
+          updateAvatar(totalScore);
+        } else {
 
-            .option.disabled {
-                opacity: 0.5;
-                pointer-events: none;
-            }
-        </style>
-
-        <!-- SCRIPT -->
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                const btn = document.getElementById("continueBtn");
-
-                btn.addEventListener("click", () => {
-                    // Redirect the full page to report.html
-                    window.location.href = "assessmentintrob.html";
-                });
-            });
-
-        </script>
-
-        <script>
-            const themes = {
-                default: {
-                    "--primary": "#2ecc71",
-                    "--primary-light": "#3ae074",
-                    "--primary-dark": "#1e8e4e",
-                    "--bg": "#edf8f6",
-                    "--card-bg": "rgba(255, 255, 255, 0.15)",
-                    "--text-color": "#0a3c1c",
-                    "--accent": "#b8e6d4",
-                    "--hover-bg": "#d4f0e4",
-                    "--button-bg": "#2ecc71",
-                    "--button-hover-bg": "#28a745",
-                },
-                fieryRed: {
-                    "--primary": "#c0392b",
-                    "--primary-light": "#e74c3c",
-                    "--primary-dark": "#922b21",
-                    "--bg": "#f9ebea",
-                    "--card-bg": "rgba(255, 255, 255, 0.2)",
-                    "--text-color": "#4a0f0f",
-                    "--accent": "#f5b7b1",
-                    "--hover-bg": "#fadbd8",
-                    "--button-bg": "#e74c3c",
-                    "--button-hover-bg": "#c0392b",
-                },
-                blushRose: {
-                    "--primary": "#e84393",
-                    "--primary-light": "#f56eb5",
-                    "--primary-dark": "#b93372",
-                    "--bg": "#fceff9",
-                    "--card-bg": "rgba(255, 255, 255, 0.2)",
-                    "--text-color": "#511a3f",
-                    "--accent": "#ffd3e3",
-                    "--hover-bg": "#f3a8b7",
-                    "--button-bg": "#e84393",
-                    "--button-hover-bg": "#ec5987",
-                },
-                midnightDark: {
-                    "--primary": "#2c3e50",
-                    "--primary-light": "#34495e",
-                    "--primary-dark": "#1c2833",
-                    "--bg": "#1a1a1a",
-                    "--card-bg": "#2a2a2a",
-                    "--text-color": "#ffffff",
-                    "--accent": "#5d6d7e",
-                    "--hover-bg": "#34495e",
-                    "--button-bg": "#34495e",
-                    "--button-hover-bg": "#2c3e50",
-                },
-                sereneLavender: {
-                    "--primary": "#9b59b6",
-                    "--primary-light": "#ab70c6",
-                    "--primary-dark": "#7a478d",
-                    "--bg": "#f6f0ff",
-                    "--card-bg": "rgba(255, 255, 255, 0.25)",
-                    "--text-color": "#311d53",
-                    "--accent": "#e8daf6",
-                    "--hover-bg": "#dcd6f7",
-                    "--button-bg": "#9b59b6",
-                    "--button-hover-bg": "#7a478d",
-                },
-                oceanBreeze: {
-                    "--primary": "#0077b6",
-                    "--primary-light": "#00b4d8",
-                    "--primary-dark": "#023e8a",
-                    "--bg": "#e0f7fa",
-                    "--card-bg": "rgba(255, 255, 255, 0.15)",
-                    "--text-color": "#012c46",
-                    "--accent": "#caf0f8",
-                    "--hover-bg": "#bde0fe",
-                    "--button-bg": "#0077b6",
-                    "--button-hover-bg": "#005f86",
-                },
-                goldenSunset: {
-                    "--primary": "#ff6b6b",
-                    "--primary-light": "#ff9999",
-                    "--primary-dark": "#d94d4d",
-                    "--bg": "#fffaf0",
-                    "--card-bg": "rgba(255, 255, 255, 0.15)",
-                    "--text-color": "#3a1d14",
-                    "--accent": "#ffe9d6",
-                    "--hover-bg": "#ffcccb",
-                    "--button-bg": "#ff6b6b",
-                    "--button-hover-bg": "#ff4444",
-                },
-                softStone: {
-                    "--primary": "#7f8c8d",
-                    "--primary-light": "#a4b0b1",
-                    "--primary-dark": "#5f6a6a",
-                    "--bg": "#f2f4f4",
-                    "--card-bg": "rgba(255, 255, 255, 0.25)",
-                    "--text-color": "#1c2a35",
-                    "--accent": "#e5e8e8",
-                    "--hover-bg": "#c8d1d2",
-                    "--button-bg": "#7f8c8d",
-                    "--button-hover-bg": "#5e6b6c",
-                },
-                softBlush: {
-                    "--primary": "#ff9aa2",
-                    "--primary-light": "#ffb6c1",
-                    "--primary-dark": "#e27a82",
-                    "--bg": "#fff5f8",
-                    "--card-bg": "rgba(255, 255, 255, 0.2)",
-                    "--text-color": "#8c1f34",
-                    "--accent": "#ffe9ef",
-                    "--hover-bg": "#ffdce3",
-                    "--button-bg": "#ff9aa2",
-                    "--button-hover-bg": "#e27a82",
-                },
-            };
-
-            const questions = [
-                { id: 1, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been feeling optimistic about the future.", answerType: "MentalWellBeing" },
-                { id: 2, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been feeling useful", answerType: "MentalWellBeing" },
-                { id: 3, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been feeling relaxed", answerType: "MentalWellBeing" },
-                { id: 4, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been feeling interested in other people", answerType: "MentalWellBeing" },
-                { id: 5, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve had energy to spare", answerType: "MentalWellBeing" },
-                { id: 6, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been dealing with problems well", answerType: "MentalWellBeing" },
-                { id: 7, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been thinking clearly", answerType: "MentalWellBeing" },
-                { id: 8, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been feeling good about myself", answerType: "MentalWellBeing" },
-                { id: 9, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been feeling close to other people", answerType: "MentalWellBeing" },
-                { id: 10, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been feeling confident", answerType: "MentalWellBeing" },
-                { id: 11, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been able to make up my own mind about things", answerType: "MentalWellBeing" },
-                { id: 12, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been feeling loved", answerType: "MentalWellBeing" },
-                { id: 13, section: "During the past 14 days", pastcoupledays: " ", text: "I’ve been interested in new things", answerType: "MentalWellBeing" },
-                { id: 14, section: "During the past 14 days", pastcoupledays: " ", text: "I've been feeling cheerful", answerType: "MentalWellBeing" },
-            ];
-
-            const answerSets = {
-                "Worst-Best": ["0 = Worst Possible", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Best Possible"],
-                Satisfaction: ["Not Satisfied at All", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Completely Satisfied"],
-                Health: ["0 = Poor", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Perfect Health"],
-                Limitation: ["0 = Severely Limited", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Not Limited at All"],
-                Worthwhile: ["0 = Not at All Worthwhile", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Completely Worthwhile"],
-                Agreement: ["0 = Strongly Disagree", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Strongly Agree"],
-                TrueOfMe: ["0 = Not True of Me", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Completely True of Me"],
-                Frequency: ["0 = Never", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = All of the Time"],
-                Happiness: ["0 = Extremely Unhappy", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Extremely Happy"],
-                MentalWellBeing: ["Not at All", "Rarely", "Some of the Time", "Often", "All the Time"],
-                Community: ["0 = Very Weak", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Extremely Strong"],
-                Loneliness: ["0 = Always", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Never"],
-                SatisfactionWithCity: ["0 = Completely Dissatisfied", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Completely Satisfied"],
-                WorrySafety: ["0 = Worry All of the Time", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Do Not Ever Worry"],
-                WorryAboutLivingExpenses: ["0 = Worry All of the Time", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10 = Do Not Ever Worry"],
-            };
-
-            let currentIndex = 0;
-
-            function applyTheme(themeName) {
-                const theme = themes[themeName];
-                Object.entries(theme).forEach(([key, val]) => {
-                    document.documentElement.style.setProperty(key, val);
-                });
-                localStorage.setItem("theme", themeName);
-            }
-
-            let scoreTotal = 0;
-            const userResponses = {}; // score by question index
-            const userAnswers = {}; // question text + answer by index
-
-            function renderQuestion(index) {
-                const q = questions[index];
-                document.getElementById("questionSection").textContent = q.section;
-                document.getElementById("questionMeta").textContent = q.pastcoupledays;
-                document.getElementById("questionText").textContent = q.text;
-                document.getElementById("questionBadge").textContent = index + 1;
-
-                const optionsContainer = document.getElementById("optionsContainer");
-                optionsContainer.innerHTML = "";
-
-                const scoreMapping = {
-                    "Not at All": 1,
-                    Rarely: 2,
-                    "Some of the Time": 3,
-                    Often: 4,
-                    "All the Time": 5,
-                };
-
-                (answerSets[q.answerType] || []).forEach((opt) => {
-                    const btn = document.createElement("button");
-                    btn.className = "option";
-                    btn.textContent = opt;
-
-                    if (opt.length > 6) btn.classList.add("long-option");
-
-                    btn.addEventListener("click", () => {
-                        // Clear previous selection
-                        const allButtons = optionsContainer.querySelectorAll(".option");
-                        allButtons.forEach((b) => b.classList.remove("selected"));
-                        btn.classList.add("selected");
-
-                        // Get the score for the selected option
-                        const score = scoreMapping[opt] || 0;
-
-                        // Adjust score total if answer already existed
-                        if (userResponses[index] !== undefined) {
-                            scoreTotal -= userResponses[index]; // subtract old
-                        }
-
-                        // Store new response
-                        userResponses[index] = score;
-                        userAnswers[index] = {
-                            question: q.text,
-                            answer: opt,
-                        };
-                        scoreTotal += score;
-
+  soundFinish.play();
+  localStorage.setItem('assessmentResults', JSON.stringify(responses));
+  questionContainer.innerHTML = '';
+  moodOptionsEl.innerHTML = '';
+  feedback.innerText = '';
+  updateAvatar(totalScore);
                         // Save to localStorage
-                        localStorage.setItem("AScore", scoreTotal);
-                        localStorage.setItem("AAnswers", JSON.stringify(userAnswers));
+                        localStorage.setItem("form_042_PartA_Score", totalScore);
+                        localStorage.setItem("form_043_PartA_Answers", JSON.stringify(responses));
+  completionMessage.innerText = `🎉 Assessment Complete! Your Score: ${totalScore} / ${questions.length * 5}`;
+  completionMessage.classList.remove('hidden');
 
-                        setTimeout(() => {
-                            if (index === questions.length - 1) {
-                                document.getElementById("continueBtn").style.display = "block";
-                                console.debug("✅ Final AScore:", scoreTotal);
+  setTimeout(() => {
+    document.body.classList.add('fade-out');
+  }, 2000);
 
-                                // Disable all buttons after last question is answered
-                                const allButtons = optionsContainer.querySelectorAll(".option");
-                                allButtons.forEach((b) => {
-                                    b.disabled = true;
-                                    b.classList.add("disabled"); // Optional: add class for styling
-                                });
-                            } else {
-                                currentIndex++;
-                                renderQuestion(currentIndex);
-                            }
-                        }, 200);
-                    });
+  setTimeout(() => {
+    window.location.href = 'assessmentintrob.html';
+  }, 4000);
 
-                    optionsContainer.appendChild(btn);
-                });
-            }
+        }
+      }, 800);
+    }
 
-            // Initialize and apply theme as early as possible
-            let currentTheme = localStorage.getItem("theme") || "default";
-            applyTheme(currentTheme);
+    themeSelector.addEventListener('change', (e) => {
+      const theme = themePresets[e.target.value];
+      if (theme) {
+        body.className = `bg-gradient-to-br ${theme[0]} ${theme[1]} min-h-screen flex flex-col items-center justify-center text-white p-4 relative`;
+      }
+    });
 
-            // Theme selection dropdown
-            document.addEventListener("DOMContentLoaded", () => {
-                const themeSelect = document.getElementById("themeSelect");
-                if (themeSelect) {
-                    themeSelect.value = currentTheme;
-                    themeSelect.addEventListener("change", (e) => {
-                        applyTheme(e.target.value);
-                    });
-                }
+    // Swipe gestures
+    let touchStartX = 0;
+    body.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
 
-                // Render initial question
-                renderQuestion(currentIndex);
+    body.addEventListener("touchend", (e) => {
+      const diffX = e.changedTouches[0].screenX - touchStartX;
+      if (diffX > 70 && currentIndex > 0) {
+        currentIndex--;
+        totalScore -= responses.pop()?.s || 0;
+        renderQuestion(currentIndex);
+      }
+    });
 
-            });
-
-            // Apply the selected theme
-            function applyTheme(themeName) {
-                const theme = themes[themeName];
-                if (!theme) return;
-
-                // Apply CSS variables
-                Object.entries(theme).forEach(([key, value]) => {
-                    document.documentElement.style.setProperty(key, value);
-                });
-
-                // Adjust text color for readability
-                setHeroDescriptionTextColor();
-
-                // Persist and sync
-                localStorage.setItem("theme", themeName);
-                currentTheme = themeName;
-            }
-
-
-            // Adjust text color based on theme background
-            function setHeroDescriptionTextColor() {
-                const bg = getComputedCSSVar("--primary-dark");
-                if (!bg || !bg.startsWith("#")) return;
-                const luminance = getLuminance(bg);
-                const color = luminance > 0.5 ? "#111" : "#fff";
-                const heroDesc = document.querySelector(".hero-description");
-                if (heroDesc) heroDesc.style.color = color;
-            }
-
-            // Get CSS variable value
-            function getComputedCSSVar(variable) {
-                return getComputedStyle(document.documentElement).getPropertyValue(variable).trim();
-            }
-
-            // Calculate luminance for color contrast
-            function getLuminance(hex) {
-                const rgb = hex
-                    .replace("#", "")
-                    .match(/.{2}/g)
-                    .map((x) => parseInt(x, 16) / 255);
-                const lum = rgb.map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
-                return 0.2126 * lum[0] + 0.7152 * lum[1] + 0.0722 * lum[2];
-            }
-
-            // Listen for theme sync messages
-            window.addEventListener("message", (event) => {
-                if (event.data?.theme && themes[event.data.theme]) {
-                    applyTheme(event.data.theme);
-                    const themeSelect = document.getElementById("themeSelect");
-                    if (themeSelect) themeSelect.value = event.data.theme;
-                }
-            });
-        </script>
-    </body>
+    renderQuestion(currentIndex);
+  </script>
+</body>
 </html>
