@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Secure User Calendar</title>
+
+  <!-- FullCalendar CSS & JS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+  <!-- Firebase compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --mint: #a0f0d0;
+      --mint-dark: #75d6b8;
+      --bg: #f9fdfc;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      padding: 20px;
+      color: #333;
+    }
+    h1 {
+      color: var(--mint-dark);
+    }
+    .auth-form, .calendar-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+    .auth-form input {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .auth-form button {
+      background: var(--mint);
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .calendar-container h3 {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Access Your Assessment Calendar</h1>
+
+  <div class="auth-form">
+    <h3>Sign In</h3>
+    <input type="text" id="firstName" placeholder="First Name" required />
+    <input type="text" id="lastName" placeholder="Last Name" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <button onclick="fetchUserCalendar()">View My Calendar</button>
+  </div>
+
+  <div id="calendarSection"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDeDsOiA6QP4qbedd_JmQ9na1hM3sf4y3Q",
+      authDomain: "mentalhealthtracker-15563.firebaseapp.com",
+      projectId: "mentalhealthtracker-15563"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function fetchUserCalendar() {
+      const first = document.getElementById("firstName").value.trim();
+      const last = document.getElementById("lastName").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+
+      db.collection("nftclientResponses")
+        .where("form_005_first-name", "==", first)
+        .where("form_006_last-name", "==", last)
+        .where("form_007_email", "==", email)
+        .get().then(snapshot => {
+          if (snapshot.empty) {
+            alert("No assessments found for these details.");
+            return;
+          }
+
+          const events = [];
+          snapshot.forEach(doc => {
+            const d = doc.data();
+            events.push({
+              title: "📝 Assessment",
+              start: d["form_000_evaluationDate"],
+              extendedProps: {
+                scoreA: d["form_042_PartA_Score"],
+                scoreB: d["form_044_PartB_Score"]
+              }
+            });
+          });
+
+          renderCalendar(events, `${first} ${last}`);
+        }).catch(error => {
+          console.error("Error fetching Firestore data:", error);
+          alert("Error retrieving data. Please check your input or try again later.");
+        });
+    }
+
+    function renderCalendar(events, name) {
+      const section = document.getElementById("calendarSection");
+      section.innerHTML = `<div class='calendar-container'><h3>${name}'s Calendar</h3><div id='calendar'></div></div>`;
+
+      const calendar = new FullCalendar.Calendar(document.getElementById("calendar"), {
+        initialView: 'dayGridMonth',
+        height: 500,
+        events: events,
+        eventClick: function(info) {
+          localStorage.clear();
+          localStorage.setItem("form_042_PartA_Score", info.event.extendedProps.scoreA || "");
+          localStorage.setItem("form_044_PartB_Score", info.event.extendedProps.scoreB || "");
+          localStorage.setItem("form_005_first-name", name);
+          window.location.href = "userreport.html";
+        }
+      });
+      calendar.render();
+    }
+  </script>
+</body>
+</html>

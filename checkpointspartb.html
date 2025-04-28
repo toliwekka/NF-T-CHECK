@@ -526,121 +526,87 @@
                 z-index: 10000;
             }
 
+            /* Base container styling */
+            .survey-container {
+                width: 100%;
+                height: auto;
+                padding: 20px;
+                box-sizing: border-box;
+                font-size: 1vw; /* Text size adjusts based on viewport width */
+                border-radius: 8px;
+                margin: 0 auto;
+                transition: all 0.3s ease;
+            }
 
+            /* Responsive adjustments for smaller screens */
+            @media (max-width: 1200px) {
+                .survey-container {
+                    font-size: 2.5vw; /* Adjust text size slightly larger for larger screens */
+                }
+            }
 
+            @media (max-width: 768px) {
+                .survey-container {
+                    font-size: 3vw; /* Adjust text size slightly larger for medium screens */
+                    padding: 15px; /* Adjust padding for smaller screens */
+                }
+            }
 
+            @media (max-width: 480px) {
+                .survey-container {
+                    font-size: 4vw; /* Increase text size for mobile */
+                    padding: 10px; /* Reduce padding */
+                }
+            }
 
+            /* Optional: Make sure text size doesn't become too small or large */
+            .survey-container h1,
+            .survey-container p {
+                font-size: calc(1rem + 2vw); /* Uses both rem and vw for flexible font size */
+            }
 
+            /* Optional: Add a scrollable container */
+            .survey-container {
+                max-height: 90vh; /* Limits height to 90% of the viewport height */
+                overflow-y: auto; /* Adds scrolling if content exceeds the max height */
+            }
 
+            /* Base container styling */
+            .survey-container {
+                width: 100%;
+                height: auto;
+                padding: 20px;
+                box-sizing: border-box;
+                font-size: 1rem; /* Set a solid base font size */
+                line-height: 1.6;
+                border-radius: 8px;
+                margin: 0 auto;
+                max-height: 90vh;
+                overflow-y: auto;
+                transition: all 0.3s ease;
+            }
 
+            /* Headers and paragraph scaling smoothly */
+            .survey-container h1 {
+                font-size: clamp(1.5rem, 2vw + 1rem, 2.75rem); /* Responsive between 1.5rem and 2.75rem */
+            }
 
+            .survey-container p {
+                font-size: clamp(1rem, 1.25vw + 0.5rem, 1.25rem); /* Responsive but controlled */
+            }
 
+            /* Responsive tweaks */
+            @media (max-width: 768px) {
+                .survey-container {
+                    padding: 16px;
+                }
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* Base container styling */
-.survey-container {
-    width: 100%;
-    height: auto;
-    padding: 20px;
-    box-sizing: border-box;
-    font-size: 1vw; /* Text size adjusts based on viewport width */
-    border-radius: 8px;
-    margin: 0 auto;
-    transition: all 0.3s ease;
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 1200px) {
-    .survey-container {
-        font-size: 2.5vw; /* Adjust text size slightly larger for larger screens */
-    }
-}
-
-@media (max-width: 768px) {
-    .survey-container {
-        font-size: 3vw; /* Adjust text size slightly larger for medium screens */
-        padding: 15px; /* Adjust padding for smaller screens */
-    }
-}
-
-@media (max-width: 480px) {
-    .survey-container {
-        font-size: 4vw; /* Increase text size for mobile */
-        padding: 10px; /* Reduce padding */
-    }
-}
-
-/* Optional: Make sure text size doesn't become too small or large */
-.survey-container h1,
-.survey-container p {
-    font-size: calc(1rem + 2vw); /* Uses both rem and vw for flexible font size */
-}
-
-/* Optional: Add a scrollable container */
-.survey-container {
-    max-height: 90vh; /* Limits height to 90% of the viewport height */
-    overflow-y: auto; /* Adds scrolling if content exceeds the max height */
-}
-
-
-
-
-
-
-
-
-
-
-
-/* Base container styling */
-.survey-container {
-    width: 100%;
-    height: auto;
-    padding: 20px;
-    box-sizing: border-box;
-    font-size: 1rem; /* Set a solid base font size */
-    line-height: 1.6;
-    border-radius: 8px;
-    margin: 0 auto;
-    max-height: 90vh;
-    overflow-y: auto;
-    transition: all 0.3s ease;
-}
-
-/* Headers and paragraph scaling smoothly */
-.survey-container h1 {
-    font-size: clamp(1.5rem, 2vw + 1rem, 2.75rem); /* Responsive between 1.5rem and 2.75rem */
-}
-
-.survey-container p {
-    font-size: clamp(1rem, 1.25vw + 0.5rem, 1.25rem); /* Responsive but controlled */
-}
-
-/* Responsive tweaks */
-@media (max-width: 768px) {
-    .survey-container {
-        padding: 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    .survey-container {
-        padding: 12px;
-    }
-}
-
+            @media (max-width: 480px) {
+                .survey-container {
+                    padding: 12px;
+                }
+            }
         </style>
 
         <!-- SCRIPT -->
@@ -795,7 +761,13 @@
                 { id: 14, section: "Relationships", pastcoupledays: "", text: "My relationships are as satisfying as I would want them to be.", answerType: "Agreement" },
                 { id: 15, section: "Relationships", pastcoupledays: "", text: "How often do you feel lonely?", answerType: "Loneliness" },
                 { id: 16, section: "Community and Social Support", pastcoupledays: "", text: "How would you describe your sense of belonging to your local community?", answerType: "Community" },
-                { id: 17, section: "Community and Social Support", pastcoupledays: "", text: "If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?", answerType: "FrequencyNeg" },
+                {
+                    id: 17,
+                    section: "Community and Social Support",
+                    pastcoupledays: "",
+                    text: "If you were in trouble, do you have relatives or friends you can count on to help you whenever you need them, or not?",
+                    answerType: "FrequencyNeg",
+                },
                 { id: 18, section: "Community and Social Support", pastcoupledays: "", text: "Are you satisfied or dissatisfied with the city or area where you live?", answerType: "Satisfaction" },
                 { id: 19, section: "Financial Evaluation and Stability", pastcoupledays: "", text: "How often do you worry about being able to meet normal monthly living expenses?", answerType: "WorryAboutLivingExpenses" },
                 { id: 20, section: "Financial Evaluation and Stability", pastcoupledays: "", text: "How often do you worry about safety, food, or housing?", answerType: "WorrySafety" },
@@ -845,7 +817,6 @@
                 });
                 localStorage.setItem("theme", themeName);
             }
-
 
             let scoreTotal = 0;
             const userResponses = {}; // Stores numeric score per question
@@ -900,8 +871,6 @@
                         localStorage.setItem("form_044_PartB_Score", scoreTotal);
                         localStorage.setItem("form_045_PartB_Answers", JSON.stringify(userAnswers));
 
-
-
                         // Continue or disable on final question
                         setTimeout(() => {
                             if (index === questions.length - 1) {
@@ -924,7 +893,6 @@
                     optionsContainer.appendChild(btn);
                 });
             }
-
 
             // Initialize and apply theme as early as possible
             let currentTheme = localStorage.getItem("theme") || "default";

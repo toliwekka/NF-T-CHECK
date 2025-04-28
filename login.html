@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>NFT Consult Report | Addressing the Elephant in the Room: A Journey to Mental Well-being</title>
+        <link rel="icon" type="image/png" href="logo.jpeg" />
+
+  <!-- Firebase compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --mint: #a0f0d0;
+      --mint-dark: #4ab89f;
+      --bg: #e0ece7;
+      --dark-gray: #2f2f2f;
+      --white: #ffffff;
+      --header-color: #333;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      transition: opacity 0.5s ease-in;
+    }
+
+    .fade-out {
+      opacity: 0;
+    }
+
+    h1 {
+      color: var(--header-color);
+      font-size: 40px;
+      margin-bottom: 30px;
+      text-align: center;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .auth-form {
+      background: var(--white);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .auth-form h3 {
+      font-size: 32px;
+      color: var(--dark-gray);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .auth-form input {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    .auth-form input:focus {
+      outline: none;
+      border-color: var(--mint-dark);
+      box-shadow: 0 0 10px rgba(74, 184, 159, 0.7);
+    }
+
+    .auth-form button {
+      width: 100%;
+      padding: 15px;
+      background-color: var(--mint-dark);
+      border: none;
+      color: var(--white);
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .auth-form button:hover {
+      background-color: #3ba18d;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    .register-link a {
+      color: var(--mint-dark);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      text-align: center;
+      padding: 1rem 0;
+      font-size: 0.9rem;
+      font-family: 'Poppins', sans-serif;
+      backdrop-filter: blur(10px);
+    }
+
+    .footer a {
+      text-decoration: none;
+      color: #ffd3a5;
+      transition: color 0.3s ease;
+    }
+
+    .footer a:hover {
+      color: #fff;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Admin Dashboard Login</h1>
+
+  <div class="auth-form">
+    <h3>Sign In to Your Admin Panel</h3>
+    <input type="text" id="firstName" placeholder="First Name" required />
+    <input type="text" id="lastName" placeholder="Last Name" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <button onclick="fetchAdminData()">Login & View Dashboard</button>
+    <div class="register-link">
+      Not registered? <a href="register.html">Register here</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; NFT Consult | Powered by Toli Wekka. All rights reserved. | 
+      <a href="#">Privacy</a> | <a href="#">Terms</a>
+    </p>
+  </footer>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDeDsOiA6QP4qbedd_JmQ9na1hM3sf4y3Q",
+      authDomain: "mentalhealthtracker-15563.firebaseapp.com",
+      projectId: "mentalhealthtracker-15563"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function fetchAdminData() {
+      const first = document.getElementById("firstName").value.trim();
+      const last = document.getElementById("lastName").value.trim();
+      const email = document.getElementById("email").value.trim().toLowerCase();
+
+      console.log("🔍 Searching for:", { first, last, email });
+
+      db.collection("nftclientResponses")
+        .where("form_005_first-name", "==", first)
+        .where("form_006_last-name", "==", last)
+        .where("form_007_email", "==", email)
+        .get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            alert("No assessments found for these details.");
+            return;
+          }
+
+          const docData = snapshot.docs[0].data(); // First matching document
+
+          // Clear previous localStorage
+          localStorage.clear();
+
+          // Store all fields
+          for (const key in docData) {
+            if (docData.hasOwnProperty(key)) {
+              localStorage.setItem(key, docData[key]);
+            }
+          }
+
+          console.log("✅ Saved to localStorage:", localStorage);
+
+          // Fade out and go to dashboard
+          document.body.classList.add("fade-out");
+          setTimeout(() => {
+            window.location.href = "userportal.html";
+          }, 500);
+        })
+        .catch(error => {
+          console.error("❌ Firestore error:", error);
+          alert("Error fetching data: " + error.message);
+        });
+    }
+  </script>
+
+</body>
+</html>

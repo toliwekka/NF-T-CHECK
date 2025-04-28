@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firestore Data Viewer</title>
+  <!-- Load Firebase Compat version (works without modules) -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <h1>Form Responses</h1>
+  <div id="output"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDeDsOiA6QP4qbedd_JmQ9na1hM3sf4y3Q",
+      authDomain: "mentalhealthtracker-15563.firebaseapp.com",
+      projectId: "mentalhealthtracker-15563",
+    };
+
+    // Initialize Firebase using compat version
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    db.collection("nftclientResponses").get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const d = doc.data();
+
+        const html = `
+          <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 10px;">
+            <p><strong>Evaluation Date:</strong> ${d["form_000_evaluationDate"] || ""}</p>
+            <p><strong>Location Type:</strong> ${d["form_001_evaluation_location_type"] || ""}</p>
+            <p><strong>Address:</strong> ${d["form_002_evaluation_address"] || ""}</p>
+            <p><strong>Country:</strong> ${d["form_003_evaluation_country"] || ""}</p>
+            <p><strong>Title:</strong> ${d["form_004_title"] || ""}</p>
+            <p><strong>First Name:</strong> ${d["form_005_first-name"] || ""}</p>
+            <p><strong>Last Name:</strong> ${d["form_006_last-name"] || ""}</p>
+            <p><strong>Email:</strong> ${d["form_007_email"] || ""}</p>
+            <p><strong>Phone:</strong> ${d["form_008_phone"] || ""}</p>
+            <p><strong>Gender:</strong> ${d["form_009_gender"] || ""}</p>
+            <p><strong>Age Group:</strong> ${d["form_010_age-group"] || ""}</p>
+            <p><strong>Part A Score:</strong> ${d["form_042_PartA_Score"] || ""}</p>
+            <p><strong>Part B Score:</strong> ${d["form_044_PartB_Score"] || ""}</p>
+          </div>
+        `;
+
+        document.getElementById("output").innerHTML += html;
+      });
+    }).catch((error) => {
+      console.error("Error reading documents:", error);
+    });
+  </script>
+</body>
+</html>
