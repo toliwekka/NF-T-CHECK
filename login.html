@@ -166,59 +166,67 @@
     </p>
   </footer>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDeDsOiA6QP4qbedd_JmQ9na1hM3sf4y3Q",
-      authDomain: "mentalhealthtracker-15563.firebaseapp.com",
-      projectId: "mentalhealthtracker-15563"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDeDsOiA6QP4qbedd_JmQ9na1hM3sf4y3Q",
+    authDomain: "mentalhealthtracker-15563.firebaseapp.com",
+    projectId: "mentalhealthtracker-15563"
+  };
 
-    function fetchAdminData() {
-      const first = document.getElementById("firstName").value.trim();
-      const last = document.getElementById("lastName").value.trim();
-      const email = document.getElementById("email").value.trim().toLowerCase();
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-      console.log("🔍 Searching for:", { first, last, email });
+  function fetchAdminData() {
+    const first = document.getElementById("firstName").value.trim();
+    const last = document.getElementById("lastName").value.trim();
+    const email = document.getElementById("email").value.trim().toLowerCase();
 
-      db.collection("nftclientResponses")
-        .where("form_005_first-name", "==", first)
-        .where("form_006_last-name", "==", last)
-        .where("form_007_email", "==", email)
-        .get()
-        .then(snapshot => {
-          if (snapshot.empty) {
-            alert("No assessments found for these details.");
-            return;
-          }
+    console.log("🔍 Searching for:", { first, last, email });
 
-          const docData = snapshot.docs[0].data(); // First matching document
-
-          // Clear previous localStorage
-          localStorage.clear();
-
-          // Store all fields
-          for (const key in docData) {
-            if (docData.hasOwnProperty(key)) {
-              localStorage.setItem(key, docData[key]);
-            }
-          }
-
-          console.log("✅ Saved to localStorage:", localStorage);
-
-          // Fade out and go to dashboard
-          document.body.classList.add("fade-out");
-          setTimeout(() => {
-            window.location.href = "userportal.html";
-          }, 500);
-        })
-        .catch(error => {
-          console.error("❌ Firestore error:", error);
-          alert("Error fetching data: " + error.message);
-        });
+    // First, check if this is an admin login attempt
+    if (first.toLowerCase() === "admin" && last.toLowerCase() === "admin" && email === "admin") {
+      window.location.href = "admindash.html";
+      return;
     }
-  </script>
+
+    // Not admin, so proceed to check Firestore
+    db.collection("nftclientResponses")
+      .where("form_005_first-name", "==", first)
+      .where("form_006_last-name", "==", last)
+      .where("form_007_email", "==", email)
+      .get()
+      .then(snapshot => {
+        if (snapshot.empty) {
+          alert("No assessments found for these details.");
+          return;
+        }
+
+        const docData = snapshot.docs[0].data(); // First matching document
+
+        // Clear previous localStorage
+        localStorage.clear();
+
+        // Store all fields
+        for (const key in docData) {
+          if (docData.hasOwnProperty(key)) {
+            localStorage.setItem(key, docData[key]);
+          }
+        }
+
+        console.log("✅ Saved to localStorage:", localStorage);
+
+        // Fade out and go to dashboard
+        document.body.classList.add("fade-out");
+        setTimeout(() => {
+          window.location.href = "userportal.html";
+        }, 500);
+      })
+      .catch(error => {
+        console.error("❌ Firestore error:", error);
+        alert("Error fetching data: " + error.message);
+      });
+  }
+</script>
 
 </body>
 </html>
