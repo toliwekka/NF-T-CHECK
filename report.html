@@ -429,7 +429,6 @@
                 db.collection("nftclientResponses")
                     .add(data)
                     .then(() => {
-                        alert("Data submitted successfully!");
                         console.log("Saved:", data);
                     })
                     .catch((error) => {

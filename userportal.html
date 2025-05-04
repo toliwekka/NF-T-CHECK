@@ -3,349 +3,1116 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>NFT Consult Report | Addressing the Elephant in the Room: A Journey to Mental Well-being</title>
+        <title>NFT Consult Report | Staff Portal</title>
         <link rel="icon" type="image/png" href="logo.jpeg" />
 
+        <!-- Fonts, Icons & Bootstrap -->
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet" />
         <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-        <!-- FullCalendar -->
+        <!-- External Libraries -->
         <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
-        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" rel="stylesheet" />
 
-        <!-- Toastify -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
-        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
         <style>
             :root {
-                --mint-green: #2ebe8e; /* NFT Consult Mint Green */
-                --light-gray: #f3f4f6;
-                --dark-gray: #1f2937;
-                --text-color: #8f4141; /* Text color as per the brand */
+                --mint: #2ebe8e;
+                --dark: #121212;
+                --glass: rgba(255, 255, 255, 0.08);
+                --deep-red: #8b0000;
             }
 
             body {
+                margin: 0;
                 font-family: "Poppins", sans-serif;
+                background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+                color: #fff;
+                overflow-x: hidden;
             }
 
-            /* Sidebar Styling */
             .sidebar {
-                background-color: var(--mint-green);
-                color: white;
-                height: 100%;
-                width: 250px;
-                padding-top: 20px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 260px;
+                background: var(--dark);
+                padding: 2rem 1rem;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+                overflow-y: auto;
+                z-index: 1000;
             }
 
-            .sidebar-item:hover {
-                background-color: rgba(46, 190, 142, 0.2);
-                transition: background-color 0.3s ease;
+            .sidebar h2 {
+                color: var(--mint);
+                text-align: center;
+                margin-bottom: 2rem;
             }
-
-            .sidebar-icon {
-                width: 20px;
-                height: 20px;
-                margin-right: 12px;
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
             }
-
-            /* Card Styling */
-            .card {
-                background-color: white;
-                border-radius: 15px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                padding: 24px;
-                transition: box-shadow 0.3s ease;
-            }
-
-            .card:hover {
-                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            }
-
-            /* Progress Circle */
-            .progress-circle {
-                background: conic-gradient(#34d399 0% 50%, #f87171 50% 100%);
-                border-radius: 50%;
-                width: 120px;
-                height: 120px;
+            .sidebar li {
+                padding: 0.75rem 1rem;
+                margin-bottom: 0.75rem;
+                border-radius: 8px;
+                background: var(--glass);
+                cursor: pointer;
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                font-size: 24px;
-                color: #1f2937;
+                gap: 0.75rem;
+                transition: 0.3s;
+            }
+            .sidebar li:hover {
+                background: var(--mint);
+                color: #000;
+            }
+            .sidebar li i.fa-chevron-down {
+                margin-left: auto;
+                transition: transform 0.3s;
+            }
+            .sidebar li.collapsed i.fa-chevron-down {
+                transform: rotate(-90deg);
+            }
+
+            .main {
+                margin-left: 260px;
+                padding: 2rem;
+            }
+            .card-glass {
+                background: var(--glass);
+                backdrop-filter: blur(14px);
+                border-radius: 16px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+            .mint-text {
+                color: var(--mint);
+            }
+            #fullCalendar {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                padding: 1rem;
+            }
+            footer {
+                background: var(--deep-red);
+                padding: 1rem;
+                text-align: center;
+                color: #fff;
+                position: fixed;
+                bottom: 0;
+                left: 260px;
+                width: calc(100% - 260px);
+            }
+
+            .chart-container {
+                width: 100%;
+                height: 100%;
+                min-height: 300px;
+            }
+        </style>
+        <style>
+            #gaugeA,
+            #gaugeB {
+                max-width: 400px;
+                height: 300px; /* Adjust height as needed */
+                margin: 0 auto; /* Center horizontally */
+            }
+
+            @media (max-width: 576px) {
+                #gaugeA,
+                #gaugeB {
+                    height: 250px; /* Smaller height on small screens */
+                }
+            }
+
+            .crisis-glow {
+                color: #e74c3c;
+                font-weight: bold;
+                animation: pulseGlow 2s infinite;
+                transition: color 0.3s ease;
+                text-shadow: 0 0 8px rgba(231, 76, 60, 0.7);
+            }
+
+            .crisis-glow:hover {
+                color: red;
+                text-shadow: 0 0 12px rgba(255, 77, 77, 1);
+            }
+
+            @keyframes pulseGlow {
+                0% {
+                    text-shadow: 0 0 5px rgba(231, 76, 60, 0.6), 0 0 10px rgba(231, 76, 60, 0.4);
+                }
+                50% {
+                    text-shadow: 0 0 15px rgba(231, 76, 60, 1), 0 0 25px rgba(231, 76, 60, 0.9);
+                }
+                100% {
+                    text-shadow: 0 0 5px rgba(231, 76, 60, 0.6), 0 0 10px rgba(231, 76, 60, 0.4);
+                }
+            }
+
+            .crisis-glow {
+                color: #ff0000;
+                font-weight: bold;
+                animation: pulseGlow 1.5s infinite;
+                transition: color 0.3s ease, text-shadow 0.3s ease;
+                text-shadow: 0 0 12px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.6);
+            }
+
+            .crisis-glow:hover {
+                color: #ff4d4d;
+                text-shadow: 0 0 16px rgba(255, 77, 77, 1), 0 0 30px rgba(255, 77, 77, 1);
+            }
+
+            @keyframes pulseGlow {
+                0% {
+                    text-shadow: 0 0 8px rgba(255, 0, 0, 0.6), 0 0 12px rgba(255, 0, 0, 0.4);
+                }
+                50% {
+                    text-shadow: 0 0 18px rgba(255, 0, 0, 1), 0 0 30px rgba(255, 0, 0, 0.9);
+                }
+                100% {
+                    text-shadow: 0 0 8px rgba(255, 0, 0, 0.6), 0 0 12px rgba(255, 0, 0, 0.4);
+                }
             }
         </style>
 
         <style>
-            /* Full CSS (Styling, Glass, Animations) */
             h1 {
                 text-align: center;
-                margin-top: 20px;
-                font-weight: 600;
-                font-size: 28px;
+                color: #2c3e50;
+                font-size: 24px;
             }
-            #calendar {
-                margin: 20px auto;
-                max-width: 1100px;
-                background: rgba(255, 255, 255, 0.6);
-                backdrop-filter: blur(14px);
-                border-radius: 20px;
-                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-                padding: 20px;
-                animation: fadeIn 1s ease;
+
+            .progress-bar-wrapper {
+                margin-bottom: 30px;
             }
-            .fab {
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                width: 60px;
-                height: 60px;
-                background: #34d399;
-                border-radius: 50%;
-                color: white;
-                font-size: 32px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                cursor: pointer;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-                z-index: 1000;
-                transition: background 0.3s ease;
-            }
-            .fab:hover {
-                background: #059669;
-            }
-            .modal {
-                display: none;
-                position: fixed;
-                z-index: 2000;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                overflow-y: auto;
-                animation: fadeIn 0.5s ease;
-            }
-            .modal-content {
-                background: #fff;
-                margin: 50px auto;
-                padding: 20px;
-                width: 400px;
-                border-radius: 16px;
-                animation: slideDown 0.5s ease;
-            }
-            .modal-content input,
-            .modal-content textarea,
-            .modal-content select {
-                width: 100%;
-                margin-bottom: 12px;
-                padding: 10px;
-                border-radius: 8px;
-                border: 1px solid #ccc;
-                font-size: 14px;
-            }
-            button {
-                background: #34d399;
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 10px;
-                cursor: pointer;
+
+            label {
+                font-size: 18px;
                 font-weight: bold;
-                margin-top: 10px;
+                display: block;
+                margin-bottom: 8px;
+                color: #27ae60; /* Toli Wekka green for mental health */
+            }
+
+            .progress-bar {
+                height: 30px;
+                border-radius: 5px;
+                background-color: #f1f1f1;
+                margin-bottom: 10px;
+            }
+
+            input[type="number"] {
+                width: 100%;
+                padding: 8px;
+                font-size: 16px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                margin-bottom: 10px;
+                background-color: #f9f9f9;
+            }
+
+            button {
+                padding: 10px 20px;
+                background-color: #27ae60; /* Toli Wekka green */
+                color: white;
+                font-size: 16px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
                 width: 100%;
             }
+
             button:hover {
-                background: #059669;
+                background-color: #2ecc71; /* Slightly darker green on hover */
             }
-            #deleteTask {
-                background: #f87171;
-            }
-            #deleteTask:hover {
-                background: #dc2626;
-            }
-            @keyframes fadeIn {
-                from {
-                    opacity: 0;
-                }
-                to {
-                    opacity: 1;
-                }
-            }
-            @keyframes slideDown {
-                from {
-                    transform: translateY(-50px);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
+
+            p {
+                font-size: 14px;
+                text-align: center;
+                color: #34495e; /* Text color for progress info */
             }
         </style>
+    <style>
+        /* General reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        h1 {
+            font-size: 3rem;
+            text-align: center;
+            color: #2d3436;
+            margin-top: 50px;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 2rem;
+            text-align: center;
+            color: #2d3436;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+
+        .resource-section {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .resource-section h3 {
+            color: #2d3436;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .resource-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: space-between;
+            padding: 20px 0;
+        }
+
+        .resource-item {
+            position: relative;
+            width: calc(33% - 20px);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            background-color: #fff;
+        }
+
+        .resource-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+
+        .resource-item:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+
+        .resource-item .content {
+            position: absolute;
+            bottom: 10%;
+            left: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            color: white;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(20px);
+        }
+
+        .resource-item:hover .content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .resource-item .content h4 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .resource-item .content p {
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .resource-item .content a {
+            padding: 12px 20px;
+            background-color: #2ecc71;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .resource-item .content a:hover {
+            background-color: #27ae60;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .resource-item {
+                width: calc(50% - 20px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .resource-item {
+                width: 100%;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+            padding: 50px;
+            display: none;
+        }
+    </style>
+
+
+        <style>
+            :root {
+                --mint: #2ebe8e;
+                --dark: #121212;
+                --glass: rgba(255, 255, 255, 0.08);
+                --deep-red: #8b0000;
+            }
+
+            body {
+                margin: 0;
+                font-family: "Poppins", sans-serif;
+                background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+                color: #fff;
+                overflow-x: hidden;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 260px;
+                background: var(--dark);
+                padding: 2rem 1rem;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+                overflow-y: auto;
+                z-index: 1000;
+            }
+
+            .sidebar h2 {
+                color: var(--mint);
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+            }
+            .sidebar li {
+                padding: 0.75rem 1rem;
+                margin-bottom: 0.75rem;
+                border-radius: 8px;
+                background: var(--glass);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                transition: 0.3s;
+            }
+            .sidebar li:hover {
+                background: var(--mint);
+                color: #000;
+            }
+            .sidebar li i.fa-chevron-down {
+                margin-left: auto;
+                transition: transform 0.3s;
+            }
+            .sidebar li.collapsed i.fa-chevron-down {
+                transform: rotate(-90deg);
+            }
+
+            .main {
+                margin-left: 260px;
+                padding: 2rem;
+            }
+            .card-glass {
+                background: var(--glass);
+                backdrop-filter: blur(14px);
+                border-radius: 16px;
+                padding: 1.5rem;
+                margin-bottom: 1.5rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            }
+            .mint-text {
+                color: var(--mint);
+            }
+            #fullCalendar {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                padding: 1rem;
+            }
+            footer {
+                background: var(--deep-red);
+                padding: 1rem;
+                text-align: center;
+                color: #fff;
+                position: fixed;
+                bottom: 0;
+                left: 260px;
+                width: calc(100% - 260px);
+            }
+
+            .chart-container {
+                width: 100%;
+                height: 100%;
+                min-height: 300px;
+            }
+        </style>
+<style>
+  #gaugeA, #gaugeB {
+    max-width: 100%;
+    height: 300px; /* Adjust height as needed */
+    margin: 0 auto; /* Center horizontally */
+  }
+
+  @media (max-width: 576px) {
+    #gaugeA, #gaugeB {
+      height: 250px; /* Smaller height on small screens */
+    }
+  }
+</style>
 
 
     </head>
-    <body class="bg-light-gray font-sans">
-        <div class="flex">
-            <!-- Sidebar -->
-            <aside class="sidebar p-6">
-                <div class="mb-8">
-                    <h1 class="text-2xl font-bold text-white">NFT-Check</h1>
-                </div>
-                <nav>
-                    <ul>
-                        <li class="sidebar-item flex items-center py-3">
-                            <span class="sidebar-icon">📝</span>
-                            <a href="assessmentintroa.html" class="text-lg text-white">Start Your Check-In</a>
-                        </li>
-                        <li class="sidebar-item flex items-center py-3">
-                            <span class="sidebar-icon">📊</span>
-                            <a href="#" class="text-lg text-white">System Overview</a>
-                        </li>
-                        <li class="sidebar-item flex items-center py-3 opacity-20 cursor-not-allowed">
-                            <span class="sidebar-icon">⚠️</span>
-                            <a href="#" class="text-lg text-white">Risk Monitor</a>
-                        </li>
-                        <li class="sidebar-item flex items-center py-3 opacity-20 cursor-not-allowed">
-                            <span class="sidebar-icon">🔗</span>
-                            <a href="#" class="text-lg text-white">System Integrations</a>
-                        </li>
-                        <li class="sidebar-item flex items-center py-3 opacity-20 cursor-not-allowed">
 
-                            <span class="sidebar-icon">📝</span>
-                            <span class="text-lg text-white">Health Reports</span>
-                            <ul class="pl-6 mt-2">
-                                <li><a href="#" class="text-white">Environment Pulse</a></li>
-                                <li><a href="#" class="text-white">Cognitive Load</a></li>
-                                <li><a href="#" class="text-white">Life-Work Balance</a></li>
-                                <li><a href="#" class="text-white">Resilience Gauge</a></li>
-                                <li><a href="#" class="text-white">Stress Level</a></li>
-                            </ul>
-                        </li>
+    <body>
+        <div class="sidebar">
+            <h8>
+                <i class="fas fa-user-cog">&nbsp;<span id="userName"></span></i>
+            </h8>
+            <ul id="menu">
+                <li data-bs-toggle="collapse" data-bs-target="#overviewSec" class="collapsed"><i class="fas fa-chart-pie"></i> Overview <i class="fas fa-chevron-down"></i></li>
+                <ul class="collapse ps-4" id="overviewSec">
+                    <li onclick="scrollToSection('assesSec')"><i class="fas fa-heartbeat"></i> Well-Being Scores Overtime</li>
+                    <li data-bs-toggle="collapse" data-bs-target="#analyticsGroup" class="collapsed"><i class="fas fa-chart-bar"></i> Analytics <i class="fas fa-chevron-down"></i></li>
+                    <ul class="collapse ps-4" id="analyticsGroup">
+                        <li onclick="scrollToSection('analyticsSec')"><i class="fas fa-chart-bar"></i> Analytics</li>
+                        <li onclick="scrollToSection('affectiveSec')"><i class="fas fa-chart-line"></i> Affective Scale</li>
+                        <li onclick="scrollToSection('functionalSec')"><i class="fas fa-trophy"></i> Functional Scale</li>
                     </ul>
-                </nav>
-                <div class="mt-6">
-                    <h2 class="text-sm font-semibold text-white">Support Hub</h2>
-                    <ul class="mt-4">
-                        <li class="sidebar-item flex items-center py-3 opacity-20 cursor-not-allowed">
+                </ul>
 
-                            <span class="sidebar-icon">📱</span>
-                            <a href="#" class="text-white">App Support</a>
-                        </li>
-                        <li class="sidebar-item flex items-center py-3">
-                            <span class="sidebar-icon">📈</span>
-                            <a href="#" class="text-white">Data Insights</a>
-                        </li>
-                        <li class="sidebar-item flex items-center py-3">
-                            <span class="sidebar-icon">📅</span>
-                            <a href="#" class="text-white">Well-being Scheduler</a>
-                        </li>
-                        <li class="sidebar-item flex items-center py-3 opacity-20 cursor-not-allowed">
-                            <span class="sidebar-icon">💼</span>
-                            <a href="#" class="text-white">Service Offerings</a>
-                        </li>
-                    </ul>
-                </div>
-            </aside>
+                <li data-bs-toggle="collapse" data-bs-target="#toolsGroup" class="collapsed"><i class="fas fa-tools"></i> Tools <i class="fas fa-chevron-down"></i></li>
+                <ul class="collapse ps-4" id="toolsGroup">
+                    <li onclick="scrollToSection('progress')"><i class="fas fa-trophy"></i> Progress</li>
+                    <li onclick="scrollToSection('goals')"><i class="fas fa-bullseye"></i> Goals</li>
+                </ul>
 
-            <!-- Main Content -->
-            <main class="flex-1 p-8">
-                <header class="flex justify-between items-center mb-8">
-                    <h2 class="text-2xl font-bold text-#8f4141">NFT-Check Dashboard</h2>
-                    <div class="flex space-x-4"></div>
-                </header>
+                <li onclick="scrollToSection('calendar')"><i class="fas fa-calendar-alt"></i> Scheduler</li>
+                <li onclick="scrollToSection('resources')"><i class="fas fa-book"></i> Resources</li>
+                <li onclick="scrollToSection('crisis')" class="crisis-glow"><i class="fas fa-exclamation-triangle"></i> Crisis</li>
+            </ul>
 
-                <!-- Health Score Section -->
-                <section class="card mb-6">
-                    <h3 class="text-lg font-semibold text-#8f4141"><span id="userName"></span>, your journey so far has led to these results. Let’s see what they reveal!</h3>
-
-                    <div class="mt-4 flex justify-center items-center">
-                        <section class="card mb-6">
-                            <h2>🧠 Emotional Snapshot</h2>
-                            <p><strong>Raw Score:</strong> <span id="partA-raw">--</span> / 70</p>
-                            <p><strong>Percentage:</strong> <span id="partA-percent">--</span></p>
-                            <p><strong>Status:</strong> <span id="partA-status">--</span></p>
-                            <em id="partA-comment">Awaiting analysis...</em>
-                        </section>
-                        <section class="card mb-6">
-                            <h2>🎯 Behavioral Evaluation</h2>
-                            <p><strong>Raw Score:</strong> <span id="partB-raw">--</span> / 240</p>
-                            <p><strong>Percentage:</strong> <span id="partB-percent">--</span></p>
-                            <p><strong>Status:</strong> <span id="partB-status">--</span></p>
-                            <em id="partB-comment">Awaiting data...</em>
-                        </section>
-                    </div>
-                    <div class="mt-4 flex justify-center items-center">
-                            <div class="chart-area">
-                                <div id="gaugeA"></div>
-                            </div>
-                            <div class="chart-area">
-                                <div id="gaugeB"></div>
-                            </div>
-                    </div>
-                </section>
-
-                <!-- Appointment Incoming -->
-                <section class="card mb-6">
-                    <h3 class="text-lg font-semibold text-#8f4141">Appointment Incoming, It’s On the Calendar</h3>
-                    <ul class="mt-4 text-sm text-gray-500">
-                    <div id="calendar" style="width: 100vw; height: 50vh; margin: 40px auto; overflow: hidden;"></div>
-                <!-- Modal -->
-
-                <div id="taskModal" class="modal">
-                    <div class="modal-content">
-                        <h3>Add / Edit Task</h3>
-                        <input type="text" id="taskTitle" placeholder="Task Title" />
-                        <textarea id="taskDescription" placeholder="Description"></textarea>
-                        <select id="taskIcon">
-                            <option value="">Choose Icon</option>
-                            <option>🧘 Meditation</option>
-                            <option>🎨 Art Therapy</option>
-                            <option>📝 Journaling</option>
-                            <option>🎧 Music Relaxation</option>
-                            <option>🚶 Mindful Walk</option>
-                            <option>📚 Reading Therapy</option>
-                            <option>💬 Talk Therapy</option>
-                            <option>🏥 T|Check-Point</option>
-                            <option>📆 Book Session</option>
-                        </select>
-                        <select id="taskMood">
-                            <option value="">Mood</option>
-                            <option>Happy</option>
-                            <option>Calm</option>
-                            <option>Motivated</option>
-                            <option>Stressed</option>
-                            <option>Sad</option>
-                        </select>
-                        <select id="taskPriority">
-                            <option value="">Priority</option>
-                            <option>High</option>
-                            <option>Medium</option>
-                            <option>Low</option>
-                        </select>
-                        <input type="date" id="taskDate" />
-                        <input type="time" id="taskStartTime" />
-                        <input type="time" id="taskEndTime" />
-                        <button id="saveTask">Save Task</button>
-                        <button id="deleteTask">Delete Task</button>
-                        <button onclick="closeModal()">Cancel</button>
-                    </div>
-                </div>
-
-                    </ul>
-                    <button class="mt-4 bg-mint-green text-white px-4 py-2 rounded shadow">Download Results</button>
-                </section>
-
-            </main>
+            <script>
+                // Make sure the scrollToSection function is defined globally
+                function scrollToSection(id) {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.scrollIntoView({ behavior: "smooth" });
+                    } else {
+                        console.warn("Section with ID " + id + " not found");
+                    }
+                }
+            </script>
         </div>
 
-        <!-- ✅ Firebase + Firestore Setup and Data Fetch -->
+        <div class="main">
+            <section id="overviewSec" class="card-glass">
+                <h3 class="mint-text">Well-Being CheckPoint Results</h3>
+
+                <section id="assesSec" class="card-glass">
+                    <div class="container mt-4">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-success text-white text-center">
+                                <h5 class="mb-0">📊 Assessment Scores Over Time</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container" style="position: relative; height: 50vh; width: 100%;">
+                                    <canvas id="timelineChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="analyticsSec" class="card-glass" style="background-color: transparent;">
+                    <div class="container mt-4">
+                        <div class="card shadow-sm" style="background-color: transparent; border: none;">
+                            <div class="card-header text-white text-center" style="background-color: rgba(40, 167, 69, 0.7); border: none;">
+                                <h5 class="mb-0">🧠⚙️ Your Affective & Functional Well-Being Balance</h5>
+                            </div>
+                            <div class="card-body d-flex justify-content-center align-items-center" style="min-height: 200px; background-color: transparent;">
+                                <canvas id="donutChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <section id="affectiveSec" class="card-glass">
+                    <div class="container mt-4">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-success text-white text-center">
+                                <h5 class="mb-0">🧠 Affective Well-being Scale Results</h5>
+                            </div>
+                                <div id="gaugeA"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="functionalSec" class="card-glass">
+                    <div class="container mt-4">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-success text-white text-center">
+                                <h5 class="mb-0">⚙️ Functional Well-being Scale Results</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="gaugeB"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="progress" class="card-glass">
+                    <h4 class="mint-text">📈 Progress Tracker</h4>
+                    <!-- Progress Bar for Mood Balance -->
+                    <div class="progress-bar-wrapper">
+                        <label for="mood-progress">Mood Balance</label>
+                        <div class="progress-bar" id="mood-progress-bar" style="width: 0%;"></div>
+                        <input type="number" id="mood-progress" min="0" max="100" placeholder="Enter mood balance progress (0-100)" />
+                        <button onclick="updateProgress('mood')">Update Mood Balance</button>
+                        <p id="mood-status">0% Complete</p>
+                    </div>
+
+                    <!-- Progress Bar for Stress Management -->
+                    <div class="progress-bar-wrapper">
+                        <label for="stress-progress">Stress Management</label>
+                        <div class="progress-bar" id="stress-progress-bar" style="width: 0%;"></div>
+                        <input type="number" id="stress-progress" min="0" max="100" placeholder="Enter stress management progress (0-100)" />
+                        <button onclick="updateProgress('stress')">Update Stress Management</button>
+                        <p id="stress-status">0% Complete</p>
+                    </div>
+
+                    <!-- Progress Bar for Sleep Quality -->
+                    <div class="progress-bar-wrapper">
+                        <label for="sleep-progress">Sleep Quality</label>
+                        <div class="progress-bar" id="sleep-progress-bar" style="width: 0%;"></div>
+                        <input type="number" id="sleep-progress" min="0" max="100" placeholder="Enter sleep quality progress (0-100)" />
+                        <button onclick="updateProgress('sleep')">Update Sleep Quality</button>
+                        <p id="sleep-status">0% Complete</p>
+                    </div>
+
+                    <!-- Progress Bar for Social Interaction -->
+                    <div class="progress-bar-wrapper">
+                        <label for="social-progress">Social Interaction</label>
+                        <div class="progress-bar" id="social-progress-bar" style="width: 0%;"></div>
+                        <input type="number" id="social-progress" min="0" max="100" placeholder="Enter social interaction progress (0-100)" />
+                        <button onclick="updateProgress('social')">Update Social Interaction</button>
+                        <p id="social-status">0% Complete</p>
+                    </div>
+
+                    <!-- Progress Bar for Physical Activity -->
+                    <div class="progress-bar-wrapper">
+                        <label for="physical-progress">Physical Activity</label>
+                        <div class="progress-bar" id="physical-progress-bar" style="width: 0%;"></div>
+                        <input type="number" id="physical-progress" min="0" max="100" placeholder="Enter physical activity progress (0-100)" />
+                        <button onclick="updateProgress('physical')">Update Physical Activity</button>
+                        <p id="physical-status">0% Complete</p>
+                    </div>
+
+                    <!-- Progress Bar for Self-Care & Reflection -->
+                    <div class="progress-bar-wrapper">
+                        <label for="selfcare-progress">Self-Care & Reflection</label>
+                        <div class="progress-bar" id="selfcare-progress-bar" style="width: 0%;"></div>
+                        <input type="number" id="selfcare-progress" min="0" max="100" placeholder="Enter self-care & reflection progress (0-100)" />
+                        <button onclick="updateProgress('selfcare')">Update Self-Care & Reflection</button>
+                        <p id="selfcare-status">0% Complete</p>
+                    </div>
+                </section>
+
+                <section id="goals" class="card-glass">
+                    <h4 class="mint-text">🎯 Smart Goals</h4>
+                    <section class="card-glass p-4 bg-dark text-white rounded shadow-sm">
+                        <h4 class="text-center mb-4">🎯 SMART Goals for Your Wellness</h4>
+                        <form id="smartGoalsForm" class="list-group">
+                            <label class="list-group-item">
+                                <input type="checkbox" name="goal1" />
+                                ✅ Complete mood check-in 4 times this week
+                                <small class="d-block text-muted">Enhances emotional awareness (Weekly)</small>
+                            </label>
+
+                            <label class="list-group-item">
+                                <input type="checkbox" name="goal2" />
+                                📘 Read 1 wellness article or video every Friday
+                                <small class="d-block text-muted">Promotes ongoing learning (Weekly)</small>
+                            </label>
+
+                            <label class="list-group-item">
+                                <input type="checkbox" name="goal3" />
+                                💬 Engage with 2 community posts this week
+                                <small class="d-block text-muted">Boosts connection and support (2-Week Goal)</small>
+                            </label>
+
+                            <label class="list-group-item">
+                                <input type="checkbox" name="goal4" />
+                                🧘 Use a coping tool 3x this week
+                                <small class="d-block text-muted">Reduces stress and enhances calm (Weekly)</small>
+                            </label>
+
+                            <label class="list-group-item">
+                                <input type="checkbox" name="goal5" />
+                                🛑 Learn and save crisis help info
+                                <small class="d-block text-muted">Ensure emergency readiness (Today)</small>
+                            </label>
+                        </form>
+                    </section>
+                    <section id="smartGoals" class="card-glass p-4 mt-4">
+                        <h4 class="text-center text-primary mb-3">🌟 Your Personalized SMART Goals</h4>
+
+                        <div class="row g-3">
+                            <!-- Personal Growth -->
+                            <div class="col-md-6">
+                                <div class="goal-card bg-light border-start border-success border-5 p-3 h-100">
+                                    <h6 class="text-success"><i class="fas fa-seedling"></i> Personal Growth</h6>
+                                    <p class="mb-1">Practice gratitude journaling 3 times this week.</p>
+                                    <small class="text-muted">💡 Builds emotional awareness and optimism</small>
+                                </div>
+                            </div>
+
+                            <!-- Mental Fitness -->
+                            <div class="col-md-6">
+                                <div class="goal-card bg-light border-start border-primary border-5 p-3 h-100">
+                                    <h6 class="text-primary"><i class="fas fa-brain"></i> Mental Fitness</h6>
+                                    <p class="mb-1">Complete 2 meditation sessions via Calm or Headspace.</p>
+                                    <small class="text-muted">🧘‍♂️ Helps manage stress and focus</small>
+                                </div>
+                            </div>
+
+                            <!-- Work-Life Balance -->
+                            <div class="col-md-6">
+                                <div class="goal-card bg-light border-start border-warning border-5 p-3 h-100">
+                                    <h6 class="text-warning"><i class="fas fa-briefcase-medical"></i> Work-Life Balance</h6>
+                                    <p class="mb-1">Take two 15-minute breaks daily away from screens.</p>
+                                    <small class="text-muted">📵 Prevents burnout and boosts clarity</small>
+                                </div>
+                            </div>
+
+                            <!-- Social Connection -->
+                            <div class="col-md-6">
+                                <div class="goal-card bg-light border-start border-info border-5 p-3 h-100">
+                                    <h6 class="text-info"><i class="fas fa-hand-holding-heart"></i> Social Connection</h6>
+                                    <p class="mb-1">Connect with a friend or colleague at least once this week.</p>
+                                    <small class="text-muted">🧑‍🤝‍🧑 Builds resilience through relationships</small>
+                                </div>
+                            </div>
+
+                            <!-- Professional Goals -->
+                            <div class="col-md-6">
+                                <div class="goal-card bg-light border-start border-danger border-5 p-3 h-100">
+                                    <h6 class="text-danger"><i class="fas fa-flag-checkered"></i> Professional Goals</h6>
+                                    <p class="mb-1">Identify one skill to improve and plan a step to do so this month.</p>
+                                    <small class="text-muted">📈 Encourages proactive development</small>
+                                </div>
+                            </div>
+
+                            <!-- Preventive Health -->
+                            <div class="col-md-6">
+                                <div class="goal-card bg-light border-start border-dark border-5 p-3 h-100">
+                                    <h6 class="text-dark"><i class="fas fa-heartbeat"></i> Preventive Health</h6>
+                                    <p class="mb-1">Schedule a routine check-up or take a wellness quiz.</p>
+                                    <small class="text-muted">🩺 Keeps you on track even when you're feeling fine</small>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+
+                <section id="calendar" class="card-glass">
+                    <h4 class="mint-text">📅 Therapist Scheduler</h4>
+                    <div id="fullCalendar"></div>
+                </section>
+
+                <section id="resources" class="card-glass">
+
+                    <div class="resource-section">
+            <h1>🎧 Find Mental Health Resources Near You</h1>
+                    <p>Books, Podcasts, Videos</p>
+            <div class="resource-section">
+                <h3>Explore Resources</h3>
+                <p class="loading">Loading local resources for you...</p>
+                <div class="resource-list" id="resource-list">
+                    <!-- Resources will be dynamically added here -->
+                </div>
+            </div>
+                    </div>
+                </section>
+
+                <section id="crisis" class="card-glass p-4" style="background: rgba(255, 0, 0, 0.1); border-left: 6px solid #e74c3c; box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);">
+                    <h4 style="color: #e74c3c;"><i class="fas fa-exclamation-triangle"></i> 🚨 Crisis Help</h4>
+                    <p style="color: #c0392b;">If you're in distress or need urgent help, tap below to reach out now.</p>
+                    <button class="btn btn-danger btn-lg shadow" style="background-color: #e74c3c; border: none;"><i class="fas fa-phone-alt"></i> Call Support</button>
+                </section>
+            </section>
+        </div>
+
+        <footer>&copy;NFT Consult | Powered by Toli Wekka. All rights reserved.</footer>
+
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+
+
+
+        <script>
+            // Static resources (must always appear)
+            const staticResources = [
+                { name: "Toli Wekka YouTube Channel", link: "https://www.youtube.com/@ToliWekka256", img: "icons/youtube-banner.jpg", description: "Powerful talks, meditation guides, and tips for mental wellness." },
+                { name: "Toli Wekka Instagram", link: "https://www.instagram.com/toliwekka/", img: "icons/instagram-banner.jpg", description: "Follow us for daily mental health tips and inspiring stories." },
+                { name: "Toli Wekka on TikTok", link: "https://www.tiktok.com/@toliwekka", img: "icons/tiktok-banner.jpg", description: "Quick mental health hacks and fun, uplifting content." },
+                { name: "Mindfulness Games for Kids", link: "https://www.mindful.org/mindfulness-for-kids/", img: "icons/kids-games-banner.jpg", description: "Interactive activities to promote emotional well-being." },
+                { name: "Top 10 Mental Health Reads", link: "https://www.goodreads.com/shelf/show/mental-health", img: "icons/books-banner.jpg", description: "Explore books to enhance emotional resilience." },
+                { name: "Exciting Puzzle Wars", link: "https://www.instagram.com/puzzle_wars/", img: "icons/Puzzle-Wars-Logo.png", description: "Boost brain power with creative puzzles." },
+            ];
+
+            // Function to get location-based resources using Google Maps Geolocation API
+            function getLocation() {
+                const apiKey = "AIzaSyA2vms9LGqfIyUe8dBkgge92omq8Bje72M"; // Replace with your actual Google Maps API Key
+                const apiUrl = `https://www.googleapis.com/geolocation/v1/geolocate?key=${apiKey}`;
+
+                fetch(apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const lat = data.location.lat;
+                        const lng = data.location.lng;
+
+                        // Use the coordinates to get the nearest city or region
+                        getCityFromCoordinates(lat, lng);
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching geolocation data:", error);
+                        loadResources(); // Load default resources if geolocation fails
+                    });
+            }
+
+            // Function to reverse geocode the coordinates to get the city
+            function getCityFromCoordinates(lat, lng) {
+                const apiKey = "AIzaSyA2vms9LGqfIyUe8dBkgge92omq8Bje72M"; // Replace with your actual Google Maps API Key
+                const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+
+                fetch(apiUrl)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const city = data.results[0].address_components.find((component) => component.types.includes("locality")).long_name;
+                        loadResources(city); // Pass city to load resources
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching city data:", error);
+                        loadResources(); // Load default resources if city can't be determined
+                    });
+            }
+
+            // Function to load resources based on location
+            function loadResources(city) {
+                const resourceList = document.getElementById("resource-list");
+                const loadingText = document.querySelector(".loading");
+
+                // Set some location-specific resources
+                const resources = {
+                    "New York": [
+                        { name: "NYC Mental Health Support", link: "https://www.nycwell.cityofnewyork.us/" },
+                        { name: "Crisis Text Line", link: "https://www.crisistextline.org/" },
+                    ],
+                    "Los Angeles": [
+                        { name: "Los Angeles Mental Health", link: "https://dmh.lacounty.gov/" },
+                        { name: "L.A. Suicide Prevention", link: "https://www.lacounty.gov" },
+                    ],
+                    London: [
+                        { name: "London Mental Health Services", link: "https://www.nhs.uk/mental-health/" },
+                        { name: "Samaritans", link: "https://www.samaritans.org/" },
+                    ],
+                    default: [
+                        { name: "Global Mental Health Resources", link: "https://www.who.int/mental_health/" },
+                        { name: "Crisis Text Line", link: "https://www.crisistextline.org/" },
+                    ],
+                };
+
+                let locationResources = resources[city] || resources["default"];
+
+                // Clear any previous resources and show loading
+                loadingText.style.display = "none";
+                resourceList.innerHTML = "";
+
+                // Add static resources first
+                staticResources.forEach((resource) => {
+                    const listItem = document.createElement("div");
+                    listItem.classList.add("resource-item");
+                    listItem.innerHTML = `
+                    <img src="${resource.img}" alt="${resource.name}">
+                    <div class="content">
+                        <h4>${resource.name}</h4>
+                        <p>${resource.description}</p>
+                        <a href="${resource.link}" target="_blank">Explore Now</a>
+                    </div>
+                `;
+                    resourceList.appendChild(listItem);
+                });
+
+                // Add location-specific resources
+                locationResources.forEach((resource) => {
+                    const listItem = document.createElement("div");
+                    listItem.classList.add("resource-item");
+                    listItem.innerHTML = `
+                    <img src="icons/location-banner.jpg" alt="${resource.name}">
+                    <div class="content">
+                        <h4>${resource.name}</h4>
+                        <p>Find more local resources</p>
+                        <a href="${resource.link}" target="_blank">Explore Now</a>
+                    </div>
+                    <div class="badge">Local</div>
+                `;
+                    resourceList.appendChild(listItem);
+                });
+            }
+
+            // Initialize on page load
+            window.onload = getLocation;
+        </script>
+
+
+                <script>
+                    // Function to update progress bars
+                    function updateProgress(goal) {
+                        // Get the input value for the specific goal (mood, stress, sleep, social, physical, selfcare)
+                        const progress = document.getElementById(goal + "-progress").value;
+
+                        // Validate the input (make sure it's between 0 and 100)
+                        if (progress < 0 || progress > 100 || isNaN(progress)) {
+                            alert("Please enter a valid progress value between 0 and 100.");
+                            return;
+                        }
+
+                        // Update the progress bar
+                        document.getElementById(goal + "-progress-bar").style.width = progress + "%";
+
+                        // Update the progress status text
+                        document.getElementById(goal + "-status").textContent = progress + "% Complete";
+
+                        // Save the progress to localStorage so it persists across page reloads
+                        localStorage.setItem(goal + "-progress", progress);
+                    }
+
+                    // Function to load the progress data from localStorage
+                    function loadProgress() {
+                        // Load progress data for each goal from localStorage
+                        const moodProgress = localStorage.getItem("mood-progress") || 0;
+                        const stressProgress = localStorage.getItem("stress-progress") || 0;
+                        const sleepProgress = localStorage.getItem("sleep-progress") || 0;
+                        const socialProgress = localStorage.getItem("social-progress") || 0;
+                        const physicalProgress = localStorage.getItem("physical-progress") || 0;
+                        const selfcareProgress = localStorage.getItem("selfcare-progress") || 0;
+
+                        // Set the initial values for the progress bars and status texts
+                        document.getElementById("mood-progress-bar").style.width = moodProgress + "%";
+                        document.getElementById("mood-status").textContent = moodProgress + "% Complete";
+                        document.getElementById("stress-progress-bar").style.width = stressProgress + "%";
+                        document.getElementById("stress-status").textContent = stressProgress + "% Complete";
+                        document.getElementById("sleep-progress-bar").style.width = sleepProgress + "%";
+                        document.getElementById("sleep-status").textContent = sleepProgress + "% Complete";
+                        document.getElementById("social-progress-bar").style.width = socialProgress + "%";
+                        document.getElementById("social-status").textContent = socialProgress + "% Complete";
+                        document.getElementById("physical-progress-bar").style.width = physicalProgress + "%";
+                        document.getElementById("physical-status").textContent = physicalProgress + "% Complete";
+                        document.getElementById("selfcare-progress-bar").style.width = selfcareProgress + "%";
+                        document.getElementById("selfcare-status").textContent = selfcareProgress + "% Complete";
+                    }
+
+                    // Load progress data when the page loads
+                    window.onload = loadProgress;
+        </script>
+
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+            import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyDeDsOiA6QP4qbedd_JmQ9na1hM3sf4y3Q",
+                authDomain: "mentalhealthtracker-15563.firebaseapp.com",
+                projectId: "mentalhealthtracker-15563",
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+
+            let progressChartInstance = null;
+
+            const first = localStorage.getItem("form_005_first-name")?.trim();
+            const last = localStorage.getItem("form_006_last-name")?.trim();
+            const email = localStorage.getItem("form_007_email")?.trim()?.toLowerCase();
+
+            if (!first || !last || !email) {
+                alert("Missing user information in localStorage.");
+            } else {
+                const q = query(collection(db, "nftclientResponses"), where("form_005_first-name", "==", first), where("form_006_last-name", "==", last), where("form_007_email", "==", email));
+
+                getDocs(q)
+                    .then((snapshot) => {
+                        if (snapshot.empty) {
+                            alert("No assessments found for these details.");
+                            return;
+                        }
+
+                        const assessments = [];
+                        const maxA = 70; // Max score for Part A
+                        const maxB = 240; // Max score for Part B
+
+                        snapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const AScore = parseFloat(data.form_042_PartA_Score);
+                            const BScore = parseFloat(data.form_044_PartB_Score);
+                            const date = data.form_000_evaluationDate;
+
+                            // Calculate percentage for A and B
+                            const percA = (AScore / maxA) * 100;
+                            const percB = (BScore / maxB) * 100;
+
+                            if (!isNaN(percA) && !isNaN(percB) && date) {
+                                assessments.push({ date, percA, percB });
+                            }
+                        });
+
+                        // Sort assessments by date
+                        assessments.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                        // Chart rendering
+                        const ctx = document.getElementById("timelineChart").getContext("2d");
+
+                        const gradientA = ctx.createLinearGradient(0, 0, 0, 400);
+                        gradientA.addColorStop(0, "rgba(46, 204, 113, 0.5)");
+                        gradientA.addColorStop(1, "rgba(46, 204, 113, 0)");
+
+                        const gradientB = ctx.createLinearGradient(0, 0, 0, 400);
+                        gradientB.addColorStop(0, "rgba(52, 152, 219, 0.5)");
+                        gradientB.addColorStop(1, "rgba(52, 152, 219, 0)");
+
+                        if (progressChartInstance) {
+                            progressChartInstance.destroy();
+                        }
+
+                        progressChartInstance = new Chart(ctx, {
+                            type: "line",
+                            data: {
+                                labels: assessments.map((a) => a.date),
+                                datasets: [
+                                    {
+                                        label: "Part A %",
+                                        data: assessments.map((a) => a.percA),
+                                        borderColor: "#2ecc71",
+                                        backgroundColor: gradientA,
+                                        tension: 0.4,
+                                        pointRadius: 4,
+                                        pointBackgroundColor: "#27ae60",
+                                        fill: true,
+                                    },
+                                    {
+                                        label: "Part B %",
+                                        data: assessments.map((a) => a.percB),
+                                        borderColor: "#3498db",
+                                        backgroundColor: gradientB,
+                                        tension: 0.4,
+                                        pointRadius: 4,
+                                        pointBackgroundColor: "#2980b9",
+                                        fill: true,
+                                    },
+                                ],
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: "bottom",
+                                        labels: {
+                                            color: "#145a32",
+                                            font: { weight: "bold" },
+                                        },
+                                    },
+                                    tooltip: {
+                                        backgroundColor: "#fff",
+                                        titleColor: "#000",
+                                        bodyColor: "#000",
+                                        borderColor: "#ccc",
+                                        borderWidth: 1,
+                                        usePointStyle: true,
+                                    },
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: "Date",
+                                            color: "#145a32",
+                                            font: { weight: "bold" },
+                                        },
+                                        ticks: { color: "#145a32" },
+                                        grid: { color: "rgba(0, 0, 0, 0.05)" },
+                                    },
+                                    y: {
+                                        beginAtZero: true,
+                                        max: 100,
+                                        title: {
+                                            display: true,
+                                            text: "Score (%)",
+                                            color: "#145a32",
+                                            font: { weight: "bold" },
+                                        },
+                                        ticks: { color: "#145a32" },
+                                        grid: { color: "rgba(0, 0, 0, 0.05)" },
+                                    },
+                                },
+                            },
+                        });
+                    })
+                    .catch((err) => {
+                        console.error("Error fetching Firestore data:", err);
+                    });
+            }
+
+            function XXscrollToSection(id) {
+                const el = document.getElementById(id);
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+                else console.warn("Section " + id + " not found");
+            }
+
+            // Sidebar chevron toggle
+            document.querySelectorAll(".sidebar li[data-bs-toggle]").forEach((li) => {
+                li.addEventListener("click", () => li.classList.toggle("collapsed"));
+            });
+        </script>
+
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
             import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
@@ -428,7 +1195,7 @@
         <script>
             document.addEventListener("DOMContentLoaded", () => {
                 const name = localStorage.getItem("form_005_first-name") || "Your";
-                const capitalized = name.charAt(0).toUpperCase() + name.slice(1).toUpperCase();
+                const capitalized = name.charAt(0) + name.slice(1);
                 document.getElementById("userName").textContent = `${capitalized},`;
             });
 
@@ -486,7 +1253,7 @@
                     percB = parseFloat(((BScore / maxB) * 100).toFixed(2));
 
                     updateScores(AScore, BScore);
-                    updateTextContent(AScore, BScore, percA, percB);
+                    // updateTextContent(AScore, BScore, percA, percB);
                     plotGauges(percA, percB);
                     renderAllCharts(percA, percB);
                 } else {
@@ -512,7 +1279,7 @@
                     percB = parseFloat(((BScore / maxB) * 100).toFixed(2));
 
                     updateScores(AScore, BScore);
-                    updateTextContent(AScore, BScore, percA, percB);
+                    // updateTextContent(AScore, BScore, percA, percB);
                     plotGauges(percA, percB);
                     renderAllCharts(percA, percB);
                 }
@@ -674,44 +1441,102 @@
                 }
             }
 
-            function plotGauges(percA, percB) {
-                Plotly.newPlot("gaugeA", [
-                    {
-                        type: "indicator",
-                        mode: "gauge+number",
-                        value: percA,
-                        title: { text: "Emotional State" },
-                        gauge: {
-                            axis: { range: [0, 100] },
-                            bar: { color: "#a4b0b1" },
-                            steps: [
-                                { range: [0, 57], color: "#FF0000" },
-                                { range: [57, 63], color: "#FF8C00" },
-                                { range: [63, 86], color: "#FFFC00" },
-                                { range: [86, 100], color: "#00FF00" },
-                            ],
-                        },
+            function renderGauge(canvasId, value, label) {
+                const ctx = document.getElementById(canvasId).getContext("2d");
+                new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        datasets: [
+                            {
+                                data: [value, 100 - value],
+                                backgroundColor: [value >= 86 ? "#00FF00" : value >= 63 ? "#FFFC00" : value >= 57 ? "#FF8C00" : "#FF0000", "rgba(255, 255, 255, 0.05)"],
+                                borderWidth: 0,
+                                cutout: "80%",
+                            },
+                        ],
                     },
-                ]);
+                    options: {
+                        plugins: {
+                            tooltip: { enabled: false },
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: `${label}: ${value}%`,
+                                color: "#ffffff",
+                                font: { size: 16 },
+                            },
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
+                    },
+                });
+            }
 
-                Plotly.newPlot("gaugeB", [
-                    {
-                        type: "indicator",
-                        mode: "gauge+number",
-                        value: percB,
-                        title: { text: "Functional Score" },
-                        gauge: {
-                            axis: { range: [0, 100] },
-                            bar: { color: "#a4b0b1" },
-                            steps: [
-                                { range: [0, 29], color: "#FF0000" },
-                                { range: [29, 54], color: "#FF8C00" },
-                                { range: [54, 79], color: "#FFFC00" },
-                                { range: [79, 100], color: "#00FF00" },
-                            ],
+            function plotGauges(percA, percB) {
+                const commonLayout = {
+                    paper_bgcolor: "rgba(0,0,0,0)", // Transparent card background
+                    plot_bgcolor: "rgba(0,0,0,0)",
+                    font: { color: "#145a32", family: "Poppins, sans-serif" },
+                    margin: { t: 40, b: 20, l: 20, r: 20 },
+                    height: 300, // Keep within card
+                    width: null, // Responsive width
+                };
+
+                // Gauge A – Emotional State
+                Plotly.newPlot(
+                    "gaugeA",
+                    [
+                        {
+                            type: "indicator",
+                            mode: "gauge+number",
+                            value: percA,
+                            title: { text: "", font: { size: 18 } },
+                            gauge: {
+                                axis: { range: [0, 100], tickwidth: 1, tickcolor: "#145a32" },
+                                bar: { color: "#d3d3d3" },
+                                bgcolor: "transparent",
+                                borderwidth: 2,
+                                bordercolor: "#ccc",
+                                steps: [
+                                    { range: [0, 57], color: "#FF0000" },
+                                    { range: [57, 63], color: "#FF8C00" },
+                                    { range: [63, 86], color: "#FFFC00" },
+                                    { range: [86, 100], color: "#00FF00" },
+                                ],
+                            },
                         },
-                    },
-                ]);
+                    ],
+                    commonLayout,
+                    { responsive: true }
+                );
+
+                // Gauge B – Functional Score
+                Plotly.newPlot(
+                    "gaugeB",
+                    [
+                        {
+                            type: "indicator",
+                            mode: "gauge+number",
+                            value: percB,
+                            title: { text: "", font: { size: 18 } },
+                            gauge: {
+                                axis: { range: [0, 100], tickwidth: 1, tickcolor: "#145a32" },
+                                bar: { color: "#d3d3d3" },
+                                bgcolor: "transparent",
+                                borderwidth: 2,
+                                bordercolor: "#ccc",
+                                steps: [
+                                    { range: [0, 29], color: "#FF0000" },
+                                    { range: [29, 54], color: "#FF8C00" },
+                                    { range: [54, 79], color: "#FFFC00" },
+                                    { range: [79, 100], color: "#00FF00" },
+                                ],
+                            },
+                        },
+                    ],
+                    commonLayout,
+                    { responsive: true }
+                );
             }
 
             // Function to determine the background color based on Part A score
@@ -750,7 +1575,7 @@
                 donutChartInstance = new Chart(donutCtx, {
                     type: "doughnut",
                     data: {
-                        labels: ["Part A", "Part B"],
+                        labels: ["😊 Affective Well-Being", "💪 Functional Well-Being"],
                         datasets: [
                             {
                                 data: [percA, percB],
@@ -762,7 +1587,25 @@
                         responsive: true,
                         plugins: {
                             legend: {
-                                labels: { color: "#fff" },
+                                labels: {
+                                    color: "#fff",
+                                    font: { weight: "bold", size: 14 },
+                                },
+                                position: "bottom",
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        const label = context.label || "";
+                                        const value = context.parsed || 0;
+                                        return `${label}: ${value.toFixed(1)}%`;
+                                    },
+                                },
+                                backgroundColor: "#fff",
+                                titleColor: "#000",
+                                bodyColor: "#000",
+                                borderColor: "#ccc",
+                                borderWidth: 1,
                             },
                         },
                     },
@@ -790,103 +1633,6 @@
                     return "#FFFFFF"; // Default white
                 }
 
-                // Debug point before destroying the old chart instance
-                if (barChartInstance) {
-                    console.log("[DEBUG] Destroying existing barChartInstance.");
-                    barChartInstance.destroy();
-                    document.querySelector("#barChartApex").innerHTML = "";
-                }
-
-                // Debug point before creating the new chart
-                console.log("[DEBUG] Creating new bar chart with scores — Part A:", cAScore, "Part B:", cBScore);
-
-                // Create Bar Chart (ApexCharts)
-                barChartInstance = new ApexCharts(document.querySelector("#barChartApex"), {
-                    chart: {
-                        type: "bar",
-                        height: 300,
-                    },
-                    series: [
-                        {
-                            name: "Score",
-                            data: [cAScore, cBScore],
-                        },
-                    ],
-                    xaxis: {
-                        categories: ["Part A", "Part B"],
-                    },
-                    colors: [getColorForPartA_BarChartSection(cAScore), getColorForPartB_BarChartSection(cBScore)],
-                    dataLabels: {
-                        enabled: true,
-                        formatter: function (val) {
-                            return val + "%"; // Display percentage sign next to value
-                        },
-                        style: {
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                            colors: ["#000"], // You can change this color for visibility if needed
-                        },
-                    },
-                    plotOptions: {
-                        bar: {
-                            dataLabels: {
-                                position: "top", // Display label on top of each bar
-                            },
-                            distributed: true, // To apply colors per bar from colors array
-                            borderRadius: 5,
-                        },
-                    },
-                    tooltip: {
-                        y: {
-                            formatter: function (val) {
-                                return val + "%";
-                            },
-                        },
-                    },
-                });
-
-                // Debug point before rendering the chart
-                console.log("[DEBUG] Rendering the bar chart.");
-                barChartInstance.render();
-
-                // Gauge Charts (Plotly)
-                Plotly.newPlot("gaugeA", [
-                    {
-                        type: "indicator",
-                        mode: "gauge+number",
-                        value: percA,
-                        title: { text: "Part A Gauge" },
-                        gauge: {
-                            axis: { range: [0, 100] },
-                            bar: { color: "#a4b0b1" },
-                            steps: [
-                                { range: [0, 57], color: "#FF0000" },
-                                { range: [57.01, 63], color: "#FF8C00" },
-                                { range: [63.01, 86], color: "#FFFC00" },
-                                { range: [86.01, 100], color: "#00FF00" },
-                            ],
-                        },
-                    },
-                ]);
-
-                Plotly.newPlot("gaugeB", [
-                    {
-                        type: "indicator",
-                        mode: "gauge+number",
-                        value: percB,
-                        title: { text: "Functional Score" },
-                        gauge: {
-                            axis: { range: [0, 100] },
-                            bar: { color: "#a4b0b1" },
-                            steps: [
-                                { range: [0, 29], color: "#FF0000" },
-                                { range: [29.01, 54], color: "#FF8C00" },
-                                { range: [54.01, 79], color: "#FFFC00" },
-                                { range: [79.01, 100], color: "#00FF00" },
-                            ],
-                        },
-                    },
-                ]);
             }
         </script>
         <script>
@@ -986,63 +1732,6 @@
                     editingEvent = null;
                 };
 
-                saveTaskBtn.onclick = function () {
-                    const title = document.getElementById("taskTitle").value.trim();
-                    const description = document.getElementById("taskDescription").value.trim();
-                    const mood = document.getElementById("taskMood").value;
-                    const date = document.getElementById("taskDate").value;
-                    const startTime = document.getElementById("taskStartTime").value;
-                    const endTime = document.getElementById("taskEndTime").value;
-
-                    if (!title || !date) {
-                        alert("Please fill at least Title and Date.");
-                        return;
-                    }
-
-                    const start = startTime ? `${date}T${startTime}` : date;
-                    const end = endTime ? `${date}T${endTime}` : start;
-
-                    if (editingEvent) {
-                        editingEvent.setProp("title", title);
-                        editingEvent.setStart(start);
-                        editingEvent.setEnd(end);
-                        editingEvent.setExtendedProp("description", description);
-                        editingEvent.setExtendedProp("mood", mood);
-                    } else {
-                        calendar.addEvent({
-                            title: title,
-                            start: start,
-                            end: end,
-                            extendedProps: { description, mood },
-                        });
-                    }
-
-                    saveToLocal();
-                    Toastify({
-                        text: editingEvent ? "Task updated!" : "Task added!",
-                        duration: 3000,
-                        gravity: "top",
-                        position: "center",
-                        backgroundColor: "#34d399",
-                    }).showToast();
-                    closeModal();
-                };
-
-                deleteTaskBtn.onclick = function () {
-                    if (editingEvent) {
-                        editingEvent.remove();
-                        saveToLocal();
-                        Toastify({
-                            text: "Task deleted!",
-                            duration: 3000,
-                            gravity: "top",
-                            position: "center",
-                            backgroundColor: "#f87171",
-                        }).showToast();
-                        closeModal();
-                    }
-                };
-
                 function saveToLocal() {
                     const events = calendar.getEvents().map((event) => ({
                         title: event.title,
@@ -1054,6 +1743,5 @@
                 }
             });
         </script>
-
     </body>
 </html>
