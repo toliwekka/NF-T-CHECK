@@ -748,8 +748,8 @@
                 </section>
 
                 <section id="resources" class="card-glass">
-        <div class="container">
-            <h1>Your Mental Well-Being Resources</h1>
+                    <h4 class="mint-text">🎧 Mental Well-Being Resources</h4>
+                    <p>Books, Podcasts, Videos</p>
             <div class="resource-section">
                 <h3>Explore Resources</h3>
                 <p class="loading">Loading local resources for you...</p>
@@ -757,8 +757,9 @@
                     <!-- Resources will be dynamically added here -->
                 </div>
             </div>
-        </div>
+
                 </section>
+
 
                 <section id="crisis" class="card-glass p-4" style="background: rgba(255, 0, 0, 0.1); border-left: 6px solid #e74c3c; box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);">
                     <h4 style="color: #e74c3c;"><i class="fas fa-exclamation-triangle"></i> 🚨 Crisis Help</h4>
@@ -777,8 +778,51 @@
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
+<script>
+// Function to update progress bars
+function updateProgress(goal) {
+    // Get the input value for the specific goal (exercise, sleep, mood)
+    const progress = document.getElementById(goal + '-progress').value;
+
+    // Validate the input (make sure it's between 0 and 100)
+    if (progress < 0 || progress > 100 || isNaN(progress)) {
+        alert('Please enter a valid progress value between 0 and 100.');
+        return;
+    }
+
+    // Update the progress bar
+    document.getElementById(goal + '-progress-bar').style.width = progress + '%';
+    
+    // Update the progress status text
+    document.getElementById(goal + '-status').textContent = progress + '% Complete';
+
+    // Save the progress to localStorage so it persists across page reloads
+    localStorage.setItem(goal + '-progress', progress);
+}
+
+// Function to load the progress data from localStorage
+function loadProgress() {
+    // Load progress data for each goal (exercise, sleep, mood) from localStorage
+    const exerciseProgress = localStorage.getItem('exercise-progress') || 0;
+    const sleepProgress = localStorage.getItem('sleep-progress') || 0;
+    const moodProgress = localStorage.getItem('mood-progress') || 0;
+
+    // Set the initial values for the progress bars and status texts
+    document.getElementById('exercise-progress-bar').style.width = exerciseProgress + '%';
+    document.getElementById('exercise-status').textContent = exerciseProgress + '% Complete';
+    document.getElementById('sleep-progress-bar').style.width = sleepProgress + '%';
+    document.getElementById('sleep-status').textContent = sleepProgress + '% Complete';
+    document.getElementById('mood-progress-bar').style.width = moodProgress + '%';
+    document.getElementById('mood-status').textContent = moodProgress + '% Complete';
+}
+
+// Load progress data when the page loads
+window.onload = loadProgress;
+
+</script>
 
 <script>
+
   const staticResources = [
     {
       name: "Toli Wekka YouTube Channel",
