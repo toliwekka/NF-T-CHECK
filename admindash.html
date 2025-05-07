@@ -1212,8 +1212,8 @@
             };
         </script>
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-  import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+  import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDeDsOiA6QP4qbedd_JmQ9na1hM3sf4y3Q",
@@ -1225,61 +1225,64 @@
   const db = getFirestore(app);
   let chartInstances = {};
 
-  // Fetch unique user responses
+  // Normalize helper
+  const normalize = (str) => (str || "").trim().toLowerCase();
+
   window.fetchUserResponses = async () => {
-    try {
-      const snapshot = await getDocs(collection(db, "nftclientResponses"));
-      const seen = new Set();
-      const userResponses = [];
+    const snapshot = await getDocs(collection(db, "nftclientResponses"));
+    const userResponses = [];
+    const seen = new Set();
 
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const key = [
-          data["form_005_first-name"]?.trim().toLowerCase(),
-          data["form_006_last-name"]?.trim().toLowerCase(),
-          data["form_008_phone"]?.trim()
-        ].join("||");
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      const key = [normalize(data["form_005_first-name"]), normalize(data["form_006_last-name"]), normalize(data["form_007_email"])].join("||");
 
-        if (!seen.has(key)) {
-          seen.add(key);
-          userResponses.push({
-            id: doc.id,
-            firstName: data["form_005_first-name"] || "Unknown",
-            lastName: data["form_006_last-name"] || "Unknown",
-            email: data["form_007_email"] || "",
-            country: data["form_003_evaluation_country"] || "Unknown",
-            empstatus: data["form_015_employment"] || "Unspecified",
-            institution: data["form_016_employer-name"] || "Unspecified",
-            partAScore: Number(data["form_042_PartA_Score"]) || 0,
-            partBScore: Number(data["form_044_PartB_Score"]) || 0,
-          });
-        }
-      });
+      if (!seen.has(key)) {
+        seen.add(key);
+        userResponses.push({
+          id: doc.id,
+          firstName: data["form_005_first-name"] || "Unknown",
+          lastName: data["form_006_last-name"] || "Unknown",
+          email: data["form_007_email"] || "",
+          country: data["form_003_evaluation_country"] || "Unknown",
+          empstatus: data["form_015_employment"] || "Unspecified",
+          institution: data["form_016_employer-name"] || "Unspecified",
+          partAScore: Number(data["form_042_PartA_Score"]) || 0,
+          partBScore: Number(data["form_044_PartB_Score"]) || 0,
+        });
+      }
+    });
 
-      loadUserResponsesIntoTable(userResponses);
-      console.log("🧠 Unique User Responses:", userResponses.length);
-    } catch (error) {
-      console.error("❌ Failed to fetch user responses:", error);
-    }
+    loadUserResponsesIntoTable(userResponses);
+    console.log("🧠 Unique User Responses:", userResponses.length);
   };
 
-  // Score color coding
   const getColorForScore = (score, part) => {
     const ranges = part === "A"
-      ? [[0, 57, "#FF0000"], [57, 63, "#FF8C00"], [63, 86, "#FFFC00"], [86, 100.01, "#00FF00"]]
-      : [[0, 29, "#FF0000"], [29, 54, "#FF8C00"], [54, 79, "#FFFC00"], [79, 100.01, "#00FF00"]];
-
-    return ranges.find(([min, max]) => score >= min && score < max)?.[2] || "#ccc";
+      ? [
+          { range: [0, 57], color: "#FF0000" },
+          { range: [57, 63], color: "#FF8C00" },
+          { range: [63, 86], color: "#FFFC00" },
+          { range: [86, 100.01], color: "#00FF00" },
+        ]
+      : [
+          { range: [0, 29], color: "#FF0000" },
+          { range: [29, 54], color: "#FF8C00" },
+          { range: [54, 79], color: "#FFFC00" },
+          { range: [79, 100.01], color: "#00FF00" },
+        ];
+    for (let r of ranges) {
+      if (score >= r.range[0] && score < r.range[1]) return r.color;
+    }
+    return "#ccc";
   };
 
-  // Render user table
   const loadUserResponsesIntoTable = (userResponses) => {
     const tableBody = document.querySelector("#userTable tbody");
     if (!tableBody) return;
-
     tableBody.innerHTML = "";
-    const grouped = {};
 
+    const grouped = {};
     userResponses.forEach((r) => {
       const inst = r.institution || "Unspecified";
       if (!grouped[inst]) grouped[inst] = [];
@@ -1289,48 +1292,60 @@
     let globalIndex = 0;
 
     Object.entries(grouped).forEach(([institution, users]) => {
-      tableBody.insertAdjacentHTML("beforeend", `<tr><td colspan="7" style="background:#eef;font-weight:bold;">🏢 Institution: ${institution} (${users.length})</td></tr>`);
+      const groupRow = document.createElement("tr");
+      groupRow.innerHTML = `<td colspan="7" style="background:#eef;font-weight:bold;">🏢 Institution: ${institution} (${users.length})</td>`;
+      tableBody.appendChild(groupRow);
 
       users.forEach((response) => {
         const partAPercent = Math.round((response.partAScore / 70) * 100);
         const partBPercent = Math.round((response.partBScore / 240) * 100);
 
-        const rowHTML = `
-          <tr class="main-row" data-index="${globalIndex}">
-            <td><strong>${response.firstName} ${response.lastName}</strong></td>
-            <td>${response.country}</td>
-            <td>${response.empstatus}</td>
-            <td>${response.institution}</td>
-            <td style="background:${getColorForScore(partAPercent, "A")};color:#000;text-align:center;font-weight:bold;">${partAPercent}%</td>
-            <td style="background:${getColorForScore(partBPercent, "B")};color:#000;text-align:center;font-weight:bold;">${partBPercent}%</td>
-            <td><button class="expand-btn" onclick="toggleDetails(${globalIndex}, '${response.firstName}', '${response.lastName}', '${response.email}')">🔍</button></td>
-          </tr>
-          <tr class="detail-row" style="display:none;">
-            <td colspan="7">
-              <div class="detail-panel fade-in">
-                <p><strong>📈 Assessment Trend Over Time</strong> (percentages reflect emotional well-being changes):</p>
-                <div style="height:300px;">
-                  <canvas id="trendChart-${globalIndex}" style="width:100%; max-height:300px;"></canvas>
-                </div>
-                <label style="margin-top:1em;display:block;">
-                  <input type="checkbox" onchange="toggleRawScores(this, ${globalIndex}, '${response.firstName}', '${response.lastName}', '${response.email}')"> Show raw scores
-                </label>
-                <p><strong>Full Name:</strong> ${response.firstName} ${response.lastName}</p>
-                <button onclick="viewFullProfile('${response.id}')">📄 Full Profile</button>
-              </div>
-            </td>
-          </tr>
+        const partAColor = getColorForScore(partAPercent, "A");
+        const partBColor = getColorForScore(partBPercent, "B");
+
+        const row = document.createElement("tr");
+        row.classList.add("main-row");
+        row.setAttribute("data-index", globalIndex);
+
+        row.innerHTML = `
+          <td><strong>${response.firstName} ${response.lastName}</strong></td>
+          <td>${response.country}</td>
+          <td>${response.empstatus}</td>
+          <td>${response.institution}</td>
+          <td style="background:${partAColor};color:#000;font-weight:bold;text-align:center;">${partAPercent}%</td>
+          <td style="background:${partBColor};color:#000;font-weight:bold;text-align:center;">${partBPercent}%</td>
+          <td><button class="expand-btn" onclick="toggleDetails(${globalIndex}, '${normalize(response.firstName)}', '${normalize(response.lastName)}', '${normalize(response.email)}')">🔍</button></td>
         `;
 
-        tableBody.insertAdjacentHTML("beforeend", rowHTML);
+        const detailRow = document.createElement("tr");
+        detailRow.classList.add("detail-row");
+        detailRow.style.display = "none";
+        detailRow.innerHTML = `
+          <td colspan="7">
+            <div class="detail-panel fade-in">
+              <p><strong>📈 Assessment Trend Over Time</strong> (percentages reflect emotional well-being changes):</p>
+              <div style="height:300px;">
+                <canvas id="trendChart-${globalIndex}" style="height:100%; width:100%; max-height:300px;"></canvas>
+              </div>
+              <label style="display:block; margin-top:1em;">
+                <input type="checkbox" onchange="toggleRawScores(this, ${globalIndex}, '${normalize(response.firstName)}', '${normalize(response.lastName)}', '${normalize(response.email)}')"> Show raw scores
+              </label>
+              <p><strong>Full Name:</strong> ${response.firstName} ${response.lastName}</p>
+              <button onclick="viewFullProfile('${response.id}')">📄 Full Profile</button>
+            </div>
+          </td>
+        `;
+
+        tableBody.appendChild(row);
+        tableBody.appendChild(detailRow);
         globalIndex++;
       });
     });
   };
 
-  // Expand/collapse chart
   window.toggleDetails = async (index, firstName, lastName, email) => {
-    document.querySelectorAll(".detail-row").forEach((row, i) => {
+    const detailRows = document.querySelectorAll(".detail-row");
+    detailRows.forEach((row, i) => {
       row.style.display = i === index ? (row.style.display === "none" ? "table-row" : "none") : "none";
     });
     renderChart(index, firstName, lastName, email, false);
@@ -1340,7 +1355,6 @@
     renderChart(index, firstName, lastName, email, checkbox.checked);
   };
 
-  // Draw Chart.js line chart
   async function renderChart(index, firstName, lastName, email, showRaw) {
     const canvas = document.getElementById(`trendChart-${index}`);
     if (!canvas) return;
@@ -1350,91 +1364,90 @@
       delete chartInstances[index];
     }
 
-    try {
-      const q = query(
-        collection(db, "nftclientResponses"),
-        where("form_005_first-name", "==", firstName),
-        where("form_006_last-name", "==", lastName),
-        where("form_007_email", "==", email)
-      );
+    const snapshot = await getDocs(collection(db, "nftclientResponses"));
+    const trendData = [];
 
-      const snapshot = await getDocs(q);
-      const trendData = [];
-
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        const rawDate = data["form_000_evaluationDate"];
-        const parsedDate = rawDate ? new Date(rawDate).toISOString().split("T")[0] : "Unknown";
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      if (
+        normalize(data["form_005_first-name"]) === firstName &&
+        normalize(data["form_006_last-name"]) === lastName &&
+        normalize(data["form_007_email"]) === email
+      ) {
+        const date = data["form_000_evaluationDate"];
         const a = Number(data["form_042_PartA_Score"]);
         const b = Number(data["form_044_PartB_Score"]);
+        const percA = (a / 70) * 100;
+        const percB = (b / 240) * 100;
 
-        if (!isNaN(a) && !isNaN(b) && rawDate) {
+        if (!isNaN(a) && !isNaN(b) && date) {
           trendData.push({
-            date: parsedDate,
-            partA: showRaw ? a : (a / 70) * 100,
-            partB: showRaw ? b : (b / 240) * 100,
+            date,
+            partA: showRaw ? a : percA,
+            partB: showRaw ? b : percB,
           });
         }
-      });
+      }
+    });
 
-      trendData.sort((a, b) => new Date(a.date) - new Date(b.date));
+    trendData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      const ctx = canvas.getContext("2d");
-      chartInstances[index] = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: trendData.map(d => d.date),
-          datasets: [
-            {
-              label: showRaw ? "Part A (raw)" : "Part A (%)",
-              data: trendData.map(d => d.partA),
-              borderColor: "#16a085",
-              backgroundColor: "rgba(22,160,133,0.1)",
-              fill: true,
-              tension: 0.4,
-              pointRadius: 4,
-            },
-            {
-              label: showRaw ? "Part B (raw)" : "Part B (%)",
-              data: trendData.map(d => d.partB),
-              borderColor: "#8e44ad",
-              backgroundColor: "rgba(142,68,173,0.1)",
-              fill: true,
-              tension: 0.4,
-              pointRadius: 4,
-            }
-          ]
+    const ctx = canvas.getContext("2d");
+    chartInstances[index] = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: trendData.map((d) => d.date),
+        datasets: [
+          {
+            label: showRaw ? "Part A (raw)" : "Part A (%)",
+            data: trendData.map((d) => d.partA),
+            borderColor: "#16a085",
+            backgroundColor: "rgba(22, 160, 133, 0.1)",
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointBackgroundColor: "#16a085",
+          },
+          {
+            label: showRaw ? "Part B (raw)" : "Part B (%)",
+            data: trendData.map((d) => d.partB),
+            borderColor: "#8e44ad",
+            backgroundColor: "rgba(142, 68, 173, 0.1)",
+            fill: true,
+            tension: 0.4,
+            pointRadius: 4,
+            pointBackgroundColor: "#8e44ad",
+          },
+        ],
+      },
+      options: {
+        animation: { duration: 1000, easing: "easeOutQuart" },
+        plugins: {
+          legend: {
+            display: true,
+            labels: { color: "#444", font: { size: 14, weight: "bold" } },
+          },
+          tooltip: { mode: "index", intersect: false },
         },
-        options: {
-          animation: {
-            duration: 800,
-            easing: "easeOutCubic",
-          },
-          plugins: {
-            legend: { labels: { color: "#333", font: { size: 13 } } },
-            tooltip: { mode: "index", intersect: false }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: showRaw ? undefined : 100,
-              title: { display: true, text: showRaw ? "Raw Score" : "Score (%)" }
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: showRaw ? undefined : 100,
+            title: {
+              display: true,
+              text: showRaw ? "Raw Score" : "Score (%)",
             },
-            x: {
-              title: { display: true, text: "Date" }
-            }
           },
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      });
-    } catch (err) {
-      console.error("📉 Chart rendering error:", err);
-    }
+          x: { title: { display: true, text: "Date" } },
+        },
+        responsive: true,
+        maintainAspectRatio: false,
+      },
+    });
   }
 
   window.viewFullProfile = (userId) => {
-    alert("📄 Full profile viewer not yet implemented. User ID: " + userId);
+    alert("Full profile viewer not implemented. User ID: " + userId);
   };
 
   document.addEventListener("DOMContentLoaded", () => {
