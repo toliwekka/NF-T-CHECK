@@ -13,8 +13,13 @@
         <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" rel="stylesheet" />
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+<!-- Firebase App (the core Firebase SDK) -->
+<!-- Firebase App (Core SDK) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+
+<!-- Firebase Firestore -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
 
         <style>
             :root {
@@ -1195,55 +1200,62 @@
             }
         </script>
 
-        <script>
-            const firebaseConfig = {
-                apiKey: "AIzaSyDeDsOiA6QP4qbedd_JmQ9na1hM3sf4y3Q",
-                authDomain: "mentalhealthtracker-15563.firebaseapp.com",
-                projectId: "mentalhealthtracker-15563",
-            };
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyDeDsOiA6QP4qbedd_JmQ9na1hM3sf4y3Q",
+        authDomain: "mentalhealthtracker-15563.firebaseapp.com",
+        projectId: "mentalhealthtracker-15563",
+    };
 
-            const app = initializeApp(firebaseConfig);
-            const db = getFirestore(app);
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
 
-            const first = localStorage.getItem("form_005_first-name")?.trim();
-            const last = localStorage.getItem("form_006_surname")?.trim();
-            const email = localStorage.getItem("form_007_email")?.trim()?.toLowerCase();
+    // Initialize Firestore
+    const db = firebase.firestore();
 
-            const welcomeMessageElement = document.getElementById("welcome-message");
+    // Fetch user information from localStorage
+    const first = localStorage.getItem("form_005_first-name")?.trim();
+    const last = localStorage.getItem("form_006_surname")?.trim();
+    const email = localStorage.getItem("form_007_email")?.trim()?.toLowerCase();
 
-            if (!first || !last || !email) {
-                alert("Missing user information in localStorage.");
+    const welcomeMessageElement = document.getElementById("welcome-message");
+
+    if (!first || !last || !email) {
+        alert("Missing user information in localStorage.");
+        welcomeMessageElement.textContent = "Welcome, Guest";
+    } else {
+        db.collection("tmrstaffResponses")
+            .where("form_005_first-name", "==", first)
+            .where("form_006_surname", "==", last)
+            .where("form_007_email", "==", email)
+            .get()
+            .then((snapshot) => {
+                if (snapshot.empty) {
+                    welcomeMessageElement.textContent = "Welcome, Guest";
+                    alert("No user data found for the provided details.");
+                    return;
+                }
+
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const fullName = `${data["form_005_first-name"] || ""} ${data["form_006_surname"] || ""}`.trim();
+                    const department = data["form_department"] || "General";
+
+                    // Update the welcome message dynamically
+                    welcomeMessageElement.textContent = `Welcome, ${fullName} | ${department}`;
+
+                    // Optionally store the full name and department locally
+                    localStorage.setItem("lastFullName", fullName);
+                    localStorage.setItem("lastDepartment", department);
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching user data:", error);
                 welcomeMessageElement.textContent = "Welcome, Guest";
-            } else {
-                const userQuery = query(collection(db, "tmrstaffResponses"), where("form_005_first-name", "==", first), where("form_006_surname", "==", last), where("form_007_email", "==", email));
-
-                getDocs(userQuery)
-                    .then((snapshot) => {
-                        if (snapshot.empty) {
-                            welcomeMessageElement.textContent = "Welcome, Guest";
-                            alert("No user data found for the provided details.");
-                            return;
-                        }
-
-                        snapshot.forEach((doc) => {
-                            const data = doc.data();
-                            const fullName = `${data["form_005_first-name"] || ""} ${data["form_006_surname"] || ""}`.trim();
-                            const department = data["form_department"] || "General";
-
-                            // Update the welcome message dynamically
-                            welcomeMessageElement.textContent = `Welcome, ${fullName} | ${department}`;
-
-                            // Optionally store the full name and department locally
-                            localStorage.setItem("lastFullName", fullName);
-                            localStorage.setItem("lastDepartment", department);
-                        });
-                    })
-                    .catch((error) => {
-                        console.error("Error fetching user data:", error);
-                        welcomeMessageElement.textContent = "Welcome, Guest";
-                    });
-            }
-        </script>
+            });
+    }
+</script>
 
         <script>
             // Switch between tab content sections
